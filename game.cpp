@@ -7,7 +7,7 @@
 	14,15对应小王和大王  */
 
 struct CardModel{
-	int CardNum[RANGE];
+	int Card[RANGE],CardNum;
 	int type1,type2,val;
 	/*	type1牌型 
 			0-王炸/火箭 1-炸弹 2-单牌 3-对子 
@@ -16,7 +16,11 @@ struct CardModel{
 		type2牌型附加信息 
 		val特征值 								*/
 	CardModel(int _Card[RANGE]){
-	
+		CardNum=0;
+		for (int i=1; i<=RANGE; i++){
+			Card[i]=_Card[i];
+			CardNum+=Card[i];
+		}
 	}
 	friend bool operator <(CardModel a,CardModel b){
 		

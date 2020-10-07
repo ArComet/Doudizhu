@@ -1,6 +1,9 @@
 #include<stdio.h>
 
+struct Game{};
+
 int SingleMod(){
+	Game game1;
 	return 0;
 }
 
@@ -11,7 +14,7 @@ int MultiMod(){
 
 int main(){
 	
-	
+	printf("hello world\n");
 	
 	return 0;
 }
