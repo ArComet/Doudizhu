@@ -37,8 +37,8 @@ int SingleMod(){
 			player[Now].ClearPreModel();
 		}
 		while (1){
-			cout<<"[model]"<<player[Now].PreModel.ModelName;ShowCard(player[Now].PreModel.Card);
-			cout<<"[play"<<Now<<"]Your card:";player[Now].DEBUG_Card();
+			cout<<"[player"<<Host<<"]"<<player[Now].PreModel.ModelName;ShowCard(player[Now].PreModel.Card);
+			cout<<"[player"<<Now<<"]Your card:";player[Now].DEBUG_Card();
 			int card[20];
 			ReadCard(card);
 			int flag=player[Now].PlayCard(card);
@@ -54,6 +54,7 @@ int SingleMod(){
 			else if (flag==2) cout<<"no engouh card!\n";
 			else if (flag==3) cout<<"can't match the premodel!\n";
 			else if (flag==4) cout<<"can't win the premodel!\n";
+			else cout<<"unexpected error!\n";
 		}
 		Now=(Now+1)%3;
 	}
