@@ -145,8 +145,7 @@ struct CardModel{
 	// -1:can't_cmp  0:>=  1:<
 	friend int cmp_CardModel(CardModel a,CardModel b){
 		if (a.type1==0){
-			if (b.type1==0) return 0;
-			else return 1; 
+			return 0;
 		}
 		if (a.type1==1){
 			if (b.type1==0 || (b.type1==1 && b.val>=a.val)) return 0;

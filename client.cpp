@@ -51,7 +51,7 @@ void DEBUG_Shuffle(){
 
 int main(){
 
-	// DEBUG_CardModel();
+	 DEBUG_CardModel();
 	// DEBUG_Shuffle();
 
 	return 0;
