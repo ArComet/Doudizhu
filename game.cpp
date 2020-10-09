@@ -13,7 +13,7 @@ using namespace std;
 
 static const int QUEUE[RANGE]={0,3,4,5,6,7,8,9,10,11,12,13,1,2,14,15};
 static const int RANK[RANGE]={0,12,13,1,2,3,4,5,6,7,8,9,10,11,14,15};
-static const string MODELNAME[RANGE]={"王炸","炸弹","单牌","对子","三张","三带一","三带二","顺子","双顺","三顺","飞机","四带二"};
+static const string MODELNAME[RANGE]={"王炸","炸弹","单牌","对子","三张","三带一","三带二","顺子","双顺","三顺","飞机","四带二","NULL"};
 
 struct CardModel{
 	int Card[RANGE],CardNum;
@@ -23,7 +23,7 @@ struct CardModel{
 			0-王炸/火箭 1-炸弹 2-单牌 3-对子 
 			4-三张 5-三带一 6-三带二 7-顺子 
 			8-双顺 9-三顺 10-飞机 11-四带二 
-			-1 error 
+			12 void -1 error 
 		type2牌型附加信息 
 		val特征值 								*/
 	void check0(){
@@ -125,12 +125,23 @@ struct CardModel{
 		for (int i=1; i<RANGE; i++)
 			if (Card[i]==4) type1=11,val=RANK[i];	
 	}
+	void check12(){
+		if (CardNum!=0) return;
+		type1=12;
+	}
 	void TypeCheck(){
 		type1=-1;type2=0;
 		check0();check1();check2();
 		check3();check4();check5();
 		check6();check7();check8();
 		check9();check10();check11();
+		check12();
+	}
+	CardModel(){
+		CardNum=0;
+		for (int i=1; i<RANGE; i++) Card[i]=0;
+		type1=12;
+		ModelName="NULL";
 	}
 	CardModel(int _Card[RANGE]){
 		CardNum=0;
@@ -144,9 +155,11 @@ struct CardModel{
 	}
 	// -1:can't_cmp  0:>=  1:<
 	friend int cmp_CardModel(CardModel a,CardModel b){
-		if (a.type1==0){
-			return 0;
+		if (a.type1==12){
+			if (b.type1==12) return 0;
+			else return 1;
 		}
+		if (a.type1==0) return 0;
 		if (a.type1==1){
 			if (b.type1==0 || (b.type1==1 && b.val>=a.val)) return 0;
 			else return 1;
@@ -158,6 +171,14 @@ struct CardModel{
 
 struct Game{
 	int Card[RANGE];
+	CardModel PreModel;
+	bool flag_giveup,flag_lord;
+
+	Game(){
+		for (int i=1; i<RANGE; i++) Card[i]=0;
+		PreModel=CardModel();
+		flag_giveup=false;
+	}
 	void ShuffleCard(int Card1[RANGE],int Card2[RANGE]){
 		for (int i=1; i<RANGE; i++) Card[i]=Card1[i]=Card2[i]=0;
 		int Deck[60];
@@ -174,6 +195,38 @@ struct Game{
 	}
 	void SetCard(int _Card[RANGE]){
 		for (int i=1; i<RANGE; i++) Card[i]=_Card[i];
+	}
+	void SetPreModel(int _Card[RANGE]){
+		PreModel=CardModel(_Card);
+	}
+	void NewTurn(){
+		flag_giveup=0;
+		PreModel=CardModel();
+	}
+	bool Model_in_Hand(CardModel model){
+		if (model.type1==-1) return false;
+		for (int i=1; i<RANGE; i++)
+			if (model.Card[i]>Card[i]) return false;
+		return true;
+	}
+	int PlayCard(int _Card[RANGE]){
+		CardModel model(_Card);
+		if (model.type1==-1) return 1;
+		if (model.type1==12){
+			flag_giveup=1;
+			return 5;
+		}
+		if (!Model_in_Hand(model)) return 2;
+		if (cmp_CardModel(PreModel,model)==-1) return 3;
+		if (cmp_CardModel(PreModel,model)==0) return 4;
+		for (int i=1; i<RANGE; i++)
+			Card[i]-=model.Card[i];
+		return 0;
+	}
+	bool CheckGameEnd(){
+		for (int i=1; i<RANGE; i++) 
+			if (Card[i]!=0) return false;
+		return true;
 	}
 	void DEBUG_Card(){
 		for (int i=1; i<RANGE; i++)

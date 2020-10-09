@@ -1,8 +1,62 @@
 #include<stdio.h>
 #include<string.h>
-#include "game.cpp"
+#include"game.cpp"
+
+int ReadCard(int* card){
+	for (int i=1; i<16; i++) card[i]=0;
+	int n;
+	cin>>n;
+	for (int i=1; i<=n; i++){
+		int x;
+		cin>>x;
+		if (x>=1 && x<=15) card[x]++;
+	}
+}
+
+int ShowCard(int* card){
+	for (int i=1; i<16; i++)
+		for (int j=1; j<=card[i]; j++)
+			cout<<i<<' ';
+	cout<<endl;
+}
 
 int SingleMod(){
+	Game player[3];
+	int card1[20],card2[20];
+	player[0].ShuffleCard(card1,card2);
+	player[1].SetCard(card1);
+	player[2].SetCard(card2);
+
+	int Now=0;
+	while (1){
+		int Pl1=(Now+1)%3,Pl2=(Now+2)%3;
+		if (!player[Now].flag_giveup){
+			if (player[Pl1].flag_giveup && player[Pl2].flag_giveup){
+				player[Pl1].NewTurn();
+				player[Pl2].NewTurn();
+				player[Now].NewTurn();
+			}
+			while (1){
+				cout<<"[model]"<<player[Now].PreModel.ModelName;ShowCard(player[Now].PreModel.Card);
+				cout<<"[play"<<Now<<"]Your card:";player[Now].DEBUG_Card();
+				int card[20];
+				ReadCard(card);
+				int flag=player[Now].PlayCard(card);
+				if (flag==0){
+					if (player[Now].CheckGameEnd()) return 0; 
+					player[Pl1].SetPreModel(card);
+					player[Pl2].SetPreModel(card);	
+					break;
+				}
+				else if (flag==5) break;
+				else if (flag==1) cout<<"no model!\n";
+				else if (flag==2) cout<<"no engouh card!\n";
+				else if (flag==3) cout<<"can't match the premodel!\n";
+				else if (flag==4) cout<<"can't win the premodel!\n";
+			}
+		}
+		Now=(Now+1)%3;
+	}
 	return 0;
 }
 
@@ -51,8 +105,8 @@ void DEBUG_Shuffle(){
 
 int main(){
 
-	 DEBUG_CardModel();
+	// DEBUG_CardModel();
 	// DEBUG_Shuffle();
-
+	SingleMod();
 	return 0;
 }
