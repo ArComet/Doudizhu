@@ -1,2 +1,2 @@
-doudizhu:client.cpp game.cpp net.cpp
-	g++ client.cpp game.cpp net.cpp -o client
+doudizhu:game.cpp net.cpp client.cpp
+	g++ game.cpp net.cpp client.cpp -o client
