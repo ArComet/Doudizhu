@@ -173,12 +173,11 @@ struct CardModel{
 struct Game{
 	int Card[RANGE];
 	CardModel PreModel;
-	bool flag_host,flag_lord;
+	bool flag_lord;
 
 	Game(){
 		for (int i=1; i<RANGE; i++) Card[i]=0;
 		PreModel=CardModel();
-		flag_host=false;
 	}
 	void ShuffleCard(int Card1[RANGE],int Card2[RANGE]){
 		for (int i=1; i<RANGE; i++) Card[i]=Card1[i]=Card2[i]=0;
@@ -200,8 +199,7 @@ struct Game{
 	void SetPreModel(int _Card[RANGE]){
 		PreModel=CardModel(_Card);
 	}
-	void NewTurn(){
-		flag_host=false;
+	void ClearPreModel(){
 		PreModel=CardModel();
 	}
 	bool Model_in_Hand(CardModel model){

@@ -27,15 +27,14 @@ int SingleMod(){
 	player[1].SetCard(card1);
 	player[2].SetCard(card2);
 
-	int Now=0;
+	int Now=0,Host=0;
 	while (1){
 		int Pl1=(Now+1)%3,Pl2=(Now+2)%3;
 		
-		if (player[Pl1].flag_host){
-			player[Pl1].NewTurn();
-			player[Pl2].NewTurn();
-			player[Now].NewTurn();
-			player[Now].flag_host=true;
+		if (Now==Host){
+			player[Pl1].ClearPreModel();
+			player[Pl2].ClearPreModel();
+			player[Now].ClearPreModel();
 		}
 		while (1){
 			cout<<"[model]"<<player[Now].PreModel.ModelName;ShowCard(player[Now].PreModel.Card);
@@ -46,7 +45,8 @@ int SingleMod(){
 			if (flag==0){
 				if (player[Now].CheckGameEnd()) return 0; 
 				player[Pl1].SetPreModel(card);
-				player[Pl2].SetPreModel(card);	
+				player[Pl2].SetPreModel(card);
+				Host=Now;	
 				break;
 			}
 			else if (flag==5) break;
