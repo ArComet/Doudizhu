@@ -2,6 +2,7 @@
 #include<iostream>
 #include<string>
 #include<algorithm>
+#include<random>
 using namespace std;
 
 #define RANGE 16
@@ -158,30 +159,27 @@ struct CardModel{
 
 struct Game{
 	int Card[RANGE];
-	void DEBUG_CardModel(){
-		while (1){
-			int n;
-			cin>>n;
-			for (int i=1; i<RANGE; i++) Card[i]=0;
-			for (int i=1; i<=n; i++){
-				int x;
-				cin>>x;
-				if (x>=1 && x<=15) Card[x]++;
-			}
-			CardModel model1(Card);
-			cout<<model1.ModelName<<'\n';
-			cin>>n;
-			for (int i=1; i<RANGE; i++) Card[i]=0;
-			for (int i=1; i<=n; i++){
-				int x;
-				cin>>x;
-				if (x>=1 && x<=15) Card[x]++;
-			}
-			CardModel model2(Card);
-			cout<<model2.ModelName<<'\n';
-			int cmpres=cmp_CardModel(model1,model2);
-			if (cmpres==-1) cout<<"无法比较\n";
-			else cout<<"1"<<(cmpres?"<":">=")<<"2\n";
-		}
+	void ShuffleCard(int Card1[RANGE],int Card2[RANGE]){
+		for (int i=1; i<RANGE; i++) Card[i]=Card1[i]=Card2[i]=0;
+		int Deck[60];
+		for (int i=1; i<=13; i++)
+			for (int j=0; j<4; j++) 
+				Deck[4*(i-1)+j]=i;
+		Deck[52]=14;
+		Deck[53]=15;
+		srand(time(0));
+		random_shuffle(Deck,Deck+54);
+		for (int i=0; i<17; i++) Card[Deck[i]]++;
+		for (int i=17; i<17+17; i++) Card1[Deck[i]]++;
+		for (int i=17+17; i<17+17+17; i++) Card2[Deck[i]]++;
+	}
+	void SetCard(int _Card[RANGE]){
+		for (int i=1; i<RANGE; i++) Card[i]=_Card[i];
+	}
+	void DEBUG_Card(){
+		for (int i=1; i<RANGE; i++)
+			for (int j=1; j<=Card[i]; j++)
+				cout<<i<<' ';
+		cout<<endl;
 	}
 };
