@@ -2,7 +2,7 @@
 #include<string.h>
 #include"game.cpp"
 
-int ReadCard(int* card){
+void ReadCard(int* card){
 	for (int i=1; i<16; i++) card[i]=0;
 	int n;
 	cin>>n;
@@ -13,7 +13,7 @@ int ReadCard(int* card){
 	}
 }
 
-int ShowCard(int* card){
+void ShowCard(int* card){
 	for (int i=1; i<16; i++)
 		for (int j=1; j<=card[i]; j++)
 			cout<<i<<' ';
@@ -30,30 +30,30 @@ int SingleMod(){
 	int Now=0;
 	while (1){
 		int Pl1=(Now+1)%3,Pl2=(Now+2)%3;
-		if (!player[Now].flag_giveup){
-			if (player[Pl1].flag_giveup && player[Pl2].flag_giveup){
-				player[Pl1].NewTurn();
-				player[Pl2].NewTurn();
-				player[Now].NewTurn();
+		
+		if (player[Pl1].flag_host){
+			player[Pl1].NewTurn();
+			player[Pl2].NewTurn();
+			player[Now].NewTurn();
+			player[Now].flag_host=true;
+		}
+		while (1){
+			cout<<"[model]"<<player[Now].PreModel.ModelName;ShowCard(player[Now].PreModel.Card);
+			cout<<"[play"<<Now<<"]Your card:";player[Now].DEBUG_Card();
+			int card[20];
+			ReadCard(card);
+			int flag=player[Now].PlayCard(card);
+			if (flag==0){
+				if (player[Now].CheckGameEnd()) return 0; 
+				player[Pl1].SetPreModel(card);
+				player[Pl2].SetPreModel(card);	
+				break;
 			}
-			while (1){
-				cout<<"[model]"<<player[Now].PreModel.ModelName;ShowCard(player[Now].PreModel.Card);
-				cout<<"[play"<<Now<<"]Your card:";player[Now].DEBUG_Card();
-				int card[20];
-				ReadCard(card);
-				int flag=player[Now].PlayCard(card);
-				if (flag==0){
-					if (player[Now].CheckGameEnd()) return 0; 
-					player[Pl1].SetPreModel(card);
-					player[Pl2].SetPreModel(card);	
-					break;
-				}
-				else if (flag==5) break;
-				else if (flag==1) cout<<"no model!\n";
-				else if (flag==2) cout<<"no engouh card!\n";
-				else if (flag==3) cout<<"can't match the premodel!\n";
-				else if (flag==4) cout<<"can't win the premodel!\n";
-			}
+			else if (flag==5) break;
+			else if (flag==1) cout<<"no model!\n";
+			else if (flag==2) cout<<"no engouh card!\n";
+			else if (flag==3) cout<<"can't match the premodel!\n";
+			else if (flag==4) cout<<"can't win the premodel!\n";
 		}
 		Now=(Now+1)%3;
 	}

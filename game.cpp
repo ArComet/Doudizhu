@@ -164,6 +164,7 @@ struct CardModel{
 			if (b.type1==0 || (b.type1==1 && b.val>=a.val)) return 0;
 			else return 1;
 		}
+		if (b.type1==0 || b.type1==1) return 1;
 		if (a.type1!=b.type1 || a.type2!=b.type2) return -1;
 		return a.val<b.val;
 	}
@@ -172,12 +173,12 @@ struct CardModel{
 struct Game{
 	int Card[RANGE];
 	CardModel PreModel;
-	bool flag_giveup,flag_lord;
+	bool flag_host,flag_lord;
 
 	Game(){
 		for (int i=1; i<RANGE; i++) Card[i]=0;
 		PreModel=CardModel();
-		flag_giveup=false;
+		flag_host=false;
 	}
 	void ShuffleCard(int Card1[RANGE],int Card2[RANGE]){
 		for (int i=1; i<RANGE; i++) Card[i]=Card1[i]=Card2[i]=0;
@@ -200,7 +201,7 @@ struct Game{
 		PreModel=CardModel(_Card);
 	}
 	void NewTurn(){
-		flag_giveup=0;
+		flag_host=false;
 		PreModel=CardModel();
 	}
 	bool Model_in_Hand(CardModel model){
@@ -212,10 +213,7 @@ struct Game{
 	int PlayCard(int _Card[RANGE]){
 		CardModel model(_Card);
 		if (model.type1==-1) return 1;
-		if (model.type1==12){
-			flag_giveup=1;
-			return 5;
-		}
+		if (model.type1==12) return 5;
 		if (!Model_in_Hand(model)) return 2;
 		if (cmp_CardModel(PreModel,model)==-1) return 3;
 		if (cmp_CardModel(PreModel,model)==0) return 4;
