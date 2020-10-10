@@ -45,7 +45,29 @@ int receivecardmsg(int *cardlist)//cardlist接收牌组信息
 	
 	return num;
 }
-
+void sendallmsg()
+{
+	int j;
+	char temp[1024];
+	for(j=0;j<3;j++)
+	{
+		send(client[j],playname[0],strlen(playname[0]),0);
+		while(1)
+		{
+			if ((rev = recv((intptr_t)client[j],temp,1024,0))>0) break;
+		}
+		send(client[j],playname[1],strlen(playname[0]),0);
+		while(1)
+		{
+			if ((rev = recv((intptr_t)client[j],temp,1024,0))>0) break;
+		}
+		send(client[j],playname[2],strlen(playname[0]),0);
+		while(1)
+		{
+			if ((rev = recv((intptr_t)client[j],temp,1024,0))>0) break;
+		}
+	}
+}
 
 int main(void)
 {
@@ -107,6 +129,7 @@ int main(void)
 		if(i==MAXFD-1)
 		{
 			printf("房间已满员，游戏即将开始\n"); //若此时以达到用户最大值，则退出链接
+			sendallmsg();
 			char begin[50]="房间已满员，游戏即将开始\n"; 
 			for(i=0;i<=2;i++)
 			send(client[i],begin,strlen(begin)+1,0);
