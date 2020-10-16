@@ -198,8 +198,9 @@ struct Game{
 	/*	洗牌发牌函数，由某一玩家调用，传入两个数组，
 		调用后设置此玩家的Card，并其他玩家的Card保存在参量中导出
 		其他玩家调用SetCard将Card信息导入			*/
-	void ShuffleCard(int Card1[RANGE],int Card2[RANGE]){
-		for (int i=1; i<RANGE; i++) Card[i]=Card1[i]=Card2[i]=0;//清空
+	void ShuffleCard(int Card1[RANGE],int Card2[RANGE],int Cardex[RANGE]){
+		for (int i=1; i<RANGE; i++) 
+			Card[i]=Card1[i]=Card2[i]=Cardex[i]=0;//清空
 		int Deck[60];
 		for (int i=1; i<=13; i++)//数值1-13
 			for (int j=0; j<4; j++)//每种4张
@@ -208,12 +209,17 @@ struct Game{
 		Deck[53]=15;//大王
 		srand(time(0));//取当前时间为随机种子
 		random_shuffle(Deck,Deck+54);//对54张牌随机重排
-		for (int i=0; i<17; i++) Card[Deck[i]]++;//0-16发给此玩家
-		for (int i=17; i<17+17; i++) Card1[Deck[i]]++;//17-33发给1
-		for (int i=17+17; i<17+17+17; i++) Card2[Deck[i]]++;//34-53发给2
+		int NUM=17;
+		for (int i=0*NUM; i<1*NUM; i++) Card[Deck[i]]++;//0-16发给此玩家
+		for (int i=1*NUM; i<2*NUM; i++) Card1[Deck[i]]++;//17-33发给1
+		for (int i=2*NUM; i<3*NUM; i++) Card2[Deck[i]]++;//34-50发给2
+		for (int i=3*NUM; i<54; i++) Cardex[Deck[i]]++;
 	}
 	void SetCard(int _Card[RANGE]){
 		for (int i=1; i<RANGE; i++) Card[i]=_Card[i];
+	}
+	void AddCard(int _Card[RANGE]){
+		for (int i=1; i<RANGE; i++) Card[i]+=_Card[i];
 	}
 	void SetPreModel(int _Card[RANGE]){
 		PreModel=CardModel(_Card);
