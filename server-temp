@@ -15,93 +15,90 @@ gcc client.c -o client -lpthread
 #include<sys/wait.h>
 #include<unistd.h>
 #include<pthread.h>
-#define MAXLINE 1000 //在一条消息中最大的输出字符数
-#define LISTENQ 20 //最大监听队列
-#define PORT 5000 //监听端口
-#define MAXFD 20 //最大的在线用户数量
-
-void *get_client(void *);
-FILE *fp;
-int i,maxi=-1;//maxi表示当前client数组中最大的用户的i值
-int client[MAXFD];
+#define TRUE 1
+#define PORT 5000
+int quit=0; //quit表示是否用户确定退出
+void *get_server(void *);
 int main(void)
 {
-	int connfd,listenfd,sockfd; //connfd存放accept函数的返回值，listenfd表示监听的套接口，
-	//sockfd用于遍历client的数组
-	socklen_t length;
-	fp=fopen("student.txt","w");
+	int connfd,snd,slenth;
 	struct sockaddr_in server;
-	struct sockaddr tcpaddr;
+	struct hostent *hp;
+	char honame[20],msg2[1024],msg1[1024],cln[102],qstr[]={"Quit"}; //qstr的值表示用户在输入"Quit"时和服务器断开链接
 	pthread_t tid;
-	listenfd=socket(AF_INET,SOCK_STREAM,0); //建立套接口并监听
-	if(listenfd<0){
-		//printf("建立套接口错误\n");
+	printf("请输入服务器IP地址\n");
+	scanf("%s*",honame);
+	printf("正在建立套接口...\n");
+	if((connfd= socket(AF_INET, SOCK_STREAM, 0))<0) //建立套接口
+	printf("建立套接口失败\n");
+	if ((hp= gethostbyname(honame))== NULL) //获取服务器IP地址
+	{
+		printf("获取服务器IP地址失败\n");
 		exit(1);
 	}
-	memset(&server,0,sizeof(server));
-	server.sin_family=AF_INET;
+	else printf("套接口建立成功，链接服务器中...\n");
+	memcpy(&server.sin_addr,hp->h_addr,hp->h_length); //将服务器IP地址放入结构体server中
+	server.sin_family = AF_INET;
 	server.sin_port=htons(PORT);
-	server.sin_addr.s_addr=htonl(INADDR_ANY);
-	if( bind(listenfd,(struct sockaddr*)&server,sizeof(server))<0 )
+	if(connect(connfd,(struct sockaddr*)&server,sizeof(server))<0) //链接套接口 
 	{
-		//printf("绑定套接口失败\n");
-		exit(1); //绑定套接口
-	}
-	length=sizeof(server);
-	if(getsockname(listenfd,(struct sockaddr*)&server,&length)<0)
-	{
-		printf("取服务器的端口号失败\n"); //取得服务器的端口号
+		printf("链接服务器失败\n");
 		exit(1);
 	}
-	for(i=0;i<MAXFD;i++)
-		client[i]=-1; //initialize the client column
-		listen(listenfd, LISTENQ);
-		printf("欢迎来到本棋牌室\n");
-		//等待用户链接.
-	for(;;)
+	printf("链接服务器成功\n"); //链接成功显示成功的登录信息
+	printf("欢迎来到棋牌室(\"Quit\"断开链接)\n");
+	//聊天室
+	while(1)
 	{
-		connfd=accept(listenfd, &tcpaddr, &length);
-		for(i=0;i<MAXFD;i++)
-		if(client[i]<0)
+		char buf[1024];
+		if ((rev = recv((intptr_t)connfd,buf,1024,0))>0)
 		{
-			client[i]=connfd;
+			printf("%s:",buf);//	printf("请输入你的用户昵称\n");	
+			scanf("%s",msg1);
+			strcpy(cln,msg1); //保存用户昵称在名为cln的数组中
+			snd=send(connfd,msg1,strlen(msg1),0);//发送消息给服务器
 			break;
-		} //用户链接成功后，在client数组中保存用户套接口号
-		if(i==MAXFD-1)
-		{
-			printf("该牌局已经满了！请稍后\n"); //若此时以达到用户最大值，则退出链接
-			exit(0);
 		}
-		if(i>maxi) maxi=i;
-		pthread_create(&tid,NULL,&get_client,(void *)(intptr_t)connfd); //若链接成功，为此用户创建一个新线程
-		} //运行get_client函数，处理用户请求
-}
-
-void *get_client(void *sockfd) //get_client函数
-{
-	char buf[MAXLINE];
-	int rev;
-	if (((intptr_t)sockfd)》=0)
+		
+	 } 
+	 
+	while(1)//客户端程序 
 	{
-		printf("\n牌友进入聊天室...\n");
-		do
-			{
-				memset(buf,0,sizeof(buf)); //初始化buffer
-				if ((rev = recv((intptr_t)sockfd,buf,1024,0))<0)
-				printf("\n等待出牌\n");
-				if (rev==0)
-				printf("\n牌友离开牌局\n");
-				else
-				{
-					//添加判断出牌人信息 得到names 
-					printf("names张三出牌%s\n", buf); //若无异常，输出出牌信息 
-					for(i=0;i<=maxi;i++)
-					send(client[i],buf,strlen(buf)+1,0);//将刚收到的用户消息分发给其他各牌友
-					fputs(buf,fp);
-				}
-			}while (rev != 0);//当不再受到用户信息时，终止循环并且关闭套接口
-			fclose(fp);
+	
 	}
-	close((intptr_t)sockfd);
-	return(NULL);
+	return 0; 
 }
+//strcat(msg1,msg2);//将消息前加上用户昵称 
+/*
+void *get_server(void* sockfd) //get_server函数，用于接受服务器转发的消息
+{
+	char buf[1024];
+	int rev;
+	if(((intptr_t)sockfd)<0)
+	printf("\n接受服务器消息失败\n");
+	else
+	{
+			printf("\n\007\n");
+			for(;;)
+		{
+			if(!quit)//只要quit不为1，则一直接受服务器消息
+			{
+					if ((rev = recv((intptr_t)sockfd,buf,1024,0))>0)
+					printf("\n\007%s\n", buf);
+					if (rev==0)
+					{
+						printf("\n服务器终止链接\n");
+						quit=1;
+						continue;
+					}
+					printf("\n");
+			}
+			else
+			{
+				close((intptr_t)sockfd);//关闭此套接口
+				break;
+			}
+		}
+		return(NULL);
+	}
+}*/
