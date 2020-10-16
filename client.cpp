@@ -25,11 +25,17 @@ void ShowCard(int* card){
 		for(int i=14;i<16;i++)
 			for(int j=1;j<=card[i];j++)
 				exist[count++] =i;
+	cout<<endl<<endl<<endl;
+	const int num = 27;
+	for (int i=0;i<(num-count)/2;i++)
+		cout<<"       ";
 	for(int i = 0; i< count ; i++)
 	{
 		cout<<"┏━━━━┓ ";
 	}	
 	cout<<endl;
+	for (int i=0;i<(num-count)/2;i++)
+		cout<<"       ";
 	for(int i = 0; i<count ; i++)
 		if(exist[i]==1)
 		cout<<"┃"<<"A"<<"   ┃ ";
@@ -48,12 +54,18 @@ void ShowCard(int* card){
 		else if(exist[i]==15)
 		cout<<"┃"<<"大王"<<"┃ ";	
 		cout<<endl;
+		for (int i=0;i<(num-count)/2;i++)
+		cout<<"       ";
 		for(int i = 0; i<count ; i++)
 		cout<<"┃    ┃ ";
 		cout<<endl;
+		for (int i=0;i<(num-count)/2;i++)
+		cout<<"       ";
 		for(int i = 0; i<count ; i++)
 		cout<<"┃    ┃ ";
 		cout<<endl;
+		for (int i=0;i<(num-count)/2;i++)
+		cout<<"       ";
 		for(int i = 0; i<count ; i++)
 		cout<<"┗━━━━┛ ";
 		cout<<endl;
@@ -61,11 +73,11 @@ void ShowCard(int* card){
 
 int SingleMod(){
 	Game player[3];
-	int card1[20],card2[20];
-	player[0].ShuffleCard(card1,card2);
+	int card1[20],card2[20],cardex[20];
+	player[0].ShuffleCard(card1,card2,cardex);
 	player[1].SetCard(card1);
 	player[2].SetCard(card2);
-
+	player[0].AddCard(cardex);
 	int Now=0,Host=0;
 	while (1){
 		int Pl1=(Now+1)%3,Pl2=(Now+2)%3;
@@ -130,17 +142,6 @@ void DEBUG_CardModel(){
 		if (cmpres==-1) cout<<"无法比较\n";
 		else cout<<"1"<<(cmpres?"<":">=")<<"2\n";
 	}
-}
-
-void DEBUG_Shuffle(){
-	Game player0,player1,player2;
-	int card1[20],card2[20];
-	player0.ShuffleCard(card1,card2);
-	player1.SetCard(card1);
-	player2.SetCard(card2);
-	player0.DEBUG_Card();
-	player1.DEBUG_Card();
-	player2.DEBUG_Card();
 }
 
 int main(){
