@@ -103,8 +103,8 @@ int main(void)
 			sendplaymsg(); 
 			printf("房间已满员，游戏即将开始\n"); //若此时以达到用户最大值，则退出链接
 			char begin[50]="房间已满员，游戏即将开始\n"; 
-			for(i=0;i<=2;i++)
-			send(client[i],begin,strlen(begin)+1,0);
+			for(int k=0;k<3;k++)
+			send(client[k],begin,strlen(begin)+1,0);
 			char tempp[1024];
 			memset(tempp,0,sizeof(tempp));
 			while(1)
@@ -123,7 +123,7 @@ int main(void)
 			memset(tempp,0,sizeof(tempp));
 			while(1)
 			{
-				rev = recv((intptr_t)client[1],tempp,1024,0);
+				rev = recv((intptr_t)client[2],tempp,1024,0);
 				if(rev>0)
 				break;				
 			}
@@ -131,25 +131,26 @@ int main(void)
 		}
 		if(i>maxi) maxi=i;	
 	} //运行get_client函数，处理用户请求
+	for(int k=0;k<3;k++)//指定发牌 
+	{
+		send(client[k],playname[0],strlen(playname[0]),0);//让0发牌 				
+	}
 	while(1)//游戏运行 
 	{		
-			//指定发牌 
-			char begin1[1024]="0fapai";
-			send(client[0],begin1,strlen(begin1),0);//让0发牌 
-			while(1)
-			{
-				rev = recv((intptr_t)client[0],begin1,1024,0);
-				if(rev>0)
-				break;				
-			}
+					
 			char tempp[1024];
 			while(1)
 			{
 				for(int k=0;k<3;k++)
 				{
 					memset(tempp,0,sizeof(tempp));
-					rev = recv((intptr_t)client[k],tempp,1024,0);
-					printf("%s",tempp); 
+					while(1)
+					{
+						if(rev = recv((intptr_t)client[k],tempp,1024,0)>0)
+						{
+							printf("%s",tempp);
+						}
+					}					
 					if(rev>0)
 					{
 						int ta=tempp[0]-'0';
