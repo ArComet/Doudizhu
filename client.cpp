@@ -3,19 +3,180 @@
 #include"game.cpp"
 
 void ReadCard(int* card){
+	
 	for (int i=1; i<16; i++) card[i]=0;
+
+	cout<<"请输入你要打出的牌数(0表示不出牌):";	
 	int n;
 	cin>>n;
-	for (int i=1; i<=n; i++){
-		int x;
-		cin>>x;
-		if (x>=1 && x<=15) card[x]++;
+	getchar();
+
+	char s[500];
+	int x;
+	int count = 0;
+	char s1[] = "大王";
+	char s2[] = "小王"; 
+	if(count<n) 
+	{
+		cout<<"请输入你要打出的牌:";
+		cin.getline(s,sizeof(s));
+
 	}
+	for (int i=0;i<strlen(s);i++)
+	{
+		if(count>=n) break;
+		x = 0;
+		if(s[i]<='9'&&s[i]>='2') x = s[i]-'0';
+		else if(s[i]=='1')
+		{
+			if(s[i+1]=='0')
+			{
+				x = 10;
+				i++;
+			}
+				
+
+		}
+		else if(s[i]=='j'||s[i]=='J') x=11;
+		else if(s[i]=='q'||s[i]=='Q') x=12;
+		else if(s[i]=='k'||s[i]=='K') x=13;
+		else if(s[i]=='a'||s[i]=='A') x=1;
+		else if(s[i]==s1[0]&&s[i+1]==s[1]&&s[i+2]==s[2]&&s[i+3]==s[3]){
+			x=15;
+			i+=3;
+		}
+		else if(s[i]==s2[0]&&s[i]==s2[1]&&s[i]==s2[2]&&s[i]==s2[3]){
+			x=14;
+			i+=3;
+		}
+		if(x!=0)
+		{
+			card[x]++;
+			count++;
+		}
+	}
+}
+void ShowUnderCard(){
+	int count = 0;
+	int exist[21];
+	/*for (int i=3; i<14; i++)
+		for (int j=1; j<=card[i]; j++)
+			exist[count++] = i;
+	for(int i=1;i<3;i++)
+		for(int j=1;j<=card[i];j++)
+			exist[count++] =i;
+	for(int i=14;i<16;i++)
+		for(int j=1;j<=card[i];j++)
+				exist[count++] =i;*/
+	int num = 27;
+	cout<<endl;
+	count = 3;
+	for(int i=0;i<3;i++)
+	{
+		exist[i] = 13;
+	}
+	for (int i=0;i<(num-count)/2;i++)
+	cout<<"       ";
+		for(int i = 0; i< count ; i++)
+	{
+		cout<<"┏━━━━┓";
+	}	
+	cout<<endl;
+	for (int i=0;i<(num-count)/2;i++)
+	cout<<"       ";
+		for(int i = 0; i<count ; i++)
+		if(exist[i]==1)
+		cout<<"┃"<<"A"<<"   ┃";
+		else if(exist[i]<10)
+		cout<<"┃"<<exist[i]<<"   ┃";
+		else if(exist[i]==10)
+		cout<<"┃"<<"10"<<"  ┃";
+		else if(exist[i]==11)
+		cout<<"┃"<<"J"<<"   ┃";		
+		else if(exist[i]==12)
+		cout<<"┃"<<"Q"<<"   ┃";
+		else if(exist[i]==13)
+		cout<<"┃"<<"K"<<"   ┃";
+		else if(exist[i]==14)
+		cout<<"┃"<<"小王"<<"┃";	
+		else if(exist[i]==15)
+		cout<<"┃"<<"大王"<<"┃";	
+		cout<<endl;
+		for (int i=0;i<(num-count)/2;i++)
+		cout<<"       ";
+		for(int i = 0; i<count ; i++)
+		cout<<"┃    ┃";
+		cout<<endl;
+		for (int i=0;i<(num-count)/2;i++)
+		cout<<"       ";
+		for(int i = 0; i<count ; i++)
+		cout<<"┃    ┃";
+		cout<<endl;
+		for (int i=0;i<(num-count)/2;i++)
+		cout<<"       ";
+		for(int i = 0; i<count ; i++)
+		cout<<"┗━━━━┛";
+		cout<<endl;
+}
+void ShowOtherCard()//BeforeCardNum,AfterCardNum,PreModel.Card
+{
+	cout<<endl;
+	cout<<endl;
+	cout<<endl;
+	int count =2;
+	int BeforeCardNum = 13;
+	int AfterCardNum  =14;
+	int i;
+	if(BeforeCardNum>0&&AfterCardNum>0)
+	{
+	cout<<"       ";
+	cout<<"┏━━━━┓";
+	for (i=0;i<23;i++)
+	cout<<"       ";
+	cout<<"┏━━━━┓";
+	cout<<endl;
+	
+
+	cout<<"       ";
+	if(BeforeCardNum<10)
+	cout<<"┃"<<BeforeCardNum<<"   ┃";	
+	else cout<<"┃"<<BeforeCardNum<<"  ┃";	
+	for (i=0;i<23;i++)
+	cout<<"       ";
+	if(AfterCardNum<10)
+	cout<<"┃"<<AfterCardNum<<"   ┃";
+	else 	cout<<"┃"<<AfterCardNum<<"  ┃";
+	cout<<endl;
+		
+
+	cout<<"       ";
+	cout<<"┃    ┃";
+	for (i=0;i<23;i++)
+	cout<<"       ";
+	cout<<"┃    ┃";
+	cout<<endl;
+	
+	cout<<"       ";
+	cout<<"┃    ┃";
+	for (i=0;i<23;i++)
+	cout<<"       ";	
+	cout<<"┃    ┃";
+	cout<<endl;
+	
+	cout<<"       ";
+	cout<<"┗━━━━┛";
+	for (i=0;i<23;i++)
+	cout<<"       ";	
+	cout<<"┗━━━━┛";
+	cout<<endl;
+	}
+	
 }
 
 void ShowCard(int* card){
+		cout<<endl<<endl<<endl<<endl<<endl;
 		int count = 0;
-		int exist[18];
+		int exist[21];
 		for (int i=3; i<14; i++)
 			for (int j=1; j<=card[i]; j++)
 				exist[count++] = i;
@@ -31,45 +192,46 @@ void ShowCard(int* card){
 		cout<<"       ";
 	for(int i = 0; i< count ; i++)
 	{
-		cout<<"┏━━━━┓ ";
+		cout<<"┏━━━━┓";
 	}	
 	cout<<endl;
 	for (int i=0;i<(num-count)/2;i++)
 		cout<<"       ";
 	for(int i = 0; i<count ; i++)
 		if(exist[i]==1)
-		cout<<"┃"<<"A"<<"   ┃ ";
+		cout<<"┃"<<"A"<<"   ┃";
 		else if(exist[i]<10)
-		cout<<"┃"<<exist[i]<<"   ┃ ";
+		cout<<"┃"<<exist[i]<<"   ┃";
 		else if(exist[i]==10)
-		cout<<"┃"<<"10"<<"  ┃ ";
+		cout<<"┃"<<"10"<<"  ┃";
 		else if(exist[i]==11)
-		cout<<"┃"<<"J"<<"   ┃ ";		
+		cout<<"┃"<<"J"<<"   ┃";		
 		else if(exist[i]==12)
-		cout<<"┃"<<"Q"<<"   ┃ ";
+		cout<<"┃"<<"Q"<<"   ┃";
 		else if(exist[i]==13)
-		cout<<"┃"<<"K"<<"   ┃ ";
+		cout<<"┃"<<"K"<<"   ┃";
 		else if(exist[i]==14)
-		cout<<"┃"<<"小王"<<"┃ ";	
+		cout<<"┃"<<"小王"<<"┃";	
 		else if(exist[i]==15)
-		cout<<"┃"<<"大王"<<"┃ ";	
+		cout<<"┃"<<"大王"<<"┃";	
 		cout<<endl;
 		for (int i=0;i<(num-count)/2;i++)
 		cout<<"       ";
 		for(int i = 0; i<count ; i++)
-		cout<<"┃    ┃ ";
+		cout<<"┃    ┃";
 		cout<<endl;
 		for (int i=0;i<(num-count)/2;i++)
 		cout<<"       ";
 		for(int i = 0; i<count ; i++)
-		cout<<"┃    ┃ ";
+		cout<<"┃    ┃";
 		cout<<endl;
 		for (int i=0;i<(num-count)/2;i++)
 		cout<<"       ";
 		for(int i = 0; i<count ; i++)
-		cout<<"┗━━━━┛ ";
+		cout<<"┗━━━━┛";
 		cout<<endl;
 }
+
 
 int SingleMod(){
 	Game player[3];
@@ -89,6 +251,8 @@ int SingleMod(){
 		}
 		while (1){	cout<<"[player"<<Host<<"]"<<player[Now].PreModel.ModelName<<endl;ShowCard(player[Now].PreModel.Card);
 			cout<<"[player"<<Now<<"]Your card:"<<endl;
+			ShowUnderCard();
+			ShowOtherCard();
 			ShowCard(player[Now].Card);
 			int card[20];
 			ReadCard(card);
