@@ -42,10 +42,8 @@ int main(void)
 	int connfd,listenfd,sockfd; //connfd存放accept函数的返回值，listenfd表示监听的套接口，
 	//sockfd用于遍历client的数组
 	socklen_t length;
-	//fp=fopen("student.txt","w");
 	struct sockaddr_in server;
 	struct sockaddr tcpaddr;
-	pthread_t tid;
 	listenfd=socket(AF_INET,SOCK_STREAM,0); //建立套接口并监听
 	if(listenfd<0){
 		printf("建立套接口错误\n");
@@ -70,7 +68,6 @@ int main(void)
 	client[i]=-1; //initialize the client column
 	listen(listenfd, LISTENQ);
 	printf("服务器监听端口 %d...\n", ntohs(server.sin_port));
-	printf("欢迎来到本室\n");
 	//等待用户链接.
 	for(;;)
 	{
@@ -148,17 +145,18 @@ int main(void)
 					{
 						if(rev = recv((intptr_t)client[k],tempp,1024,0)>0)
 						{
-							printf("%s",tempp);
+							printf("%s\n",tempp);
+							break;
 						}
 					}					
 					if(rev>0)
 					{
 						int ta=tempp[0]-'0';
-						for(int k=0;k<2;k++)
+						for(int l=0;l<3;l++)
 						{
-							if(ta!=k)
+							if(ta!=l)
 							{
-								send(client[ta],tempp,strlen(tempp),0);//转发信息 
+								send(client[l],tempp,strlen(tempp),0);//转发信息 
 							}
 						}
 					}	
