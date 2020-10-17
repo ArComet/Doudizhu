@@ -1,4 +1,3 @@
-/* 由于线程pthread库不是Linux系统默认的库，连接时需要使用库libpthread.a,所以程序中有使用pthread_create，在编译中要加-lpthread参数*/ 
 #include<stdlib.h>
 #include<stdio.h>
 #include<string.h>
@@ -132,6 +131,54 @@ int main(void)
 	{
 		send(client[k],playname[0],strlen(playname[0]),0);//让0发牌 				
 	}
+	while(1)//begin 
+{		
+					
+		char tempp[1024];
+		int  time=2;
+		while(time--)
+		{
+			memset(tempp,0,sizeof(tempp));
+			while(1)
+			{
+				if(rev = recv((intptr_t)client[0],tempp,1024,0)>0)
+				{
+						int ta=tempp[0]-'0';
+						int tb=tempp[1]-'0';
+						snd=send(client[tb],tempp,strlen(tempp),0);
+						snd=send(client[ta],tempp,strlen(tempp),0);
+						break;
+					}
+				}					
+		}
+		while(1)
+		{
+			char tempp[1024];
+			while(1)
+			{				
+				memset(tempp,0,sizeof(tempp));
+				while(1)
+				{
+					if(rev = recv((intptr_t)client[k],tempp,1024,0)>0)
+						{
+							break;
+						}
+				}					
+				if(rev>0)
+				{
+					int ta=tempp[0]-'0';
+					for(int l=0;l<3;l++)
+					{
+						if(ta!=l)
+						{
+							snd=send(client[l],tempp,strlen(tempp),0);//转发信息 
+						}
+					}
+				}							
+			}	
+		}
+		break;
+} 
 	while(1)//游戏运行 
 	{		
 					
@@ -156,7 +203,7 @@ int main(void)
 						{
 							if(ta!=l)
 							{
-								send(client[l],tempp,strlen(tempp),0);//转发信息 
+								snd=send(client[l],tempp,strlen(tempp),0);//转发信息 
 							}
 						}
 					}	
@@ -165,4 +212,3 @@ int main(void)
 	} 
 	return 0;
 }
-//memset(buf,0,sizeof(buf)); //初始化buffer 
