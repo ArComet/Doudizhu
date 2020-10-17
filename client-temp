@@ -189,7 +189,40 @@ int main(void)
 		}
 	}
 	getplayername();
-	while(1)//客户端程序 
+	while(1)
+	{
+		char buf[1024];
+		memset(buf,0,sizeof(buf));
+		if ((rev = recv((intptr_t)connfd,buf,1024,0))>0)
+		{
+			printf("%s",buf);//	
+			snd=send(connfd,buf,strlen(buf),0);//发送消息给服务器
+			break;
+		}
+
+	}
+	char buf[1024];
+	memset(buf,0,sizeof(buf));
+	while(1)
+	{
+		if ((rev = recv((intptr_t)connfd,buf,1024,0))>0)
+		{
+			printf("%s\n",buf);
+			int ans=strcmp(buf,msg1);
+			if(ans==0)
+			{
+				printf("fapai\n");
+				//fa pai
+			}
+			else
+			{
+				printf("wait card\n");
+			}
+			break;
+		}
+	}
+	
+	while(1)
 	{
 		
 	}
