@@ -1,9 +1,4 @@
-/* 由于线程pthread库不是Linux系统默认的库，连接时需要使用库libpthread.a,所以程序中有使用pthread_create，在编译中要加-lpthread参数
-
-gcc client.c -o client -lpthread 
-
-*/
-
+/* 由于线程pthread库不是Linux系统默认的库，连接时需要使用库libpthread.a,所以程序中有使用pthread_create，在编译中要加-lpthread参数*/ 
 #include<stdlib.h>
 #include<stdio.h>
 #include<string.h>
@@ -19,63 +14,35 @@ gcc client.c -o client -lpthread
 #define LISTENQ 20 //最大监听队列
 #define PORT 5000 //监听端口
 #define MAXFD 3 //最大的在线用户数量
-
-void *get_client(void *);
+int rev,snd;
 FILE *fp;
-int rev;
 int i,maxi=-1;//maxi表示当前client数组中最大的用户的i值
 int client[MAXFD];
-//num 0-2 牌发给谁 isplay 是否到他出牌 cardlist[] 牌组 cardlist[1]=3:表示有3张A
-int sendcardmsg(int num,int isplay,int cardtype,int cardlist[]) //cardtype 牌型编号 
-{//发牌//发送出牌信息 //可以以前一个结合，客户端判断牌型 
-	int flag;
-	//如果确认到返回1
-	return flag ;
-}
-int sendendmsg(int num,int win)//win 赢得人的编号 
-{//发送牌局结束信息 
-	int flag;
-	//如果确认到返回1
-	//想继续玩返回2 
-	return flag ;
-}
-int receivecardmsg(int *cardlist)//cardlist接收牌组信息
+char playname[5][20]; //用户名 
+void sendplaymsg()
 {
-	int num;//收到的出牌人编号
-	
-	return num;
-}
-void sendallmsg()
-{
-	int j;
-	char temp[1024];
-	for(j=0;j<3;j++)
+	for(int k=0;k<3;k++)
 	{
-		send(client[j],playname[0],strlen(playname[0]),0);
-		while(1)
+		for(int l=0;l<3;l++)
 		{
-			if ((rev = recv((intptr_t)client[j],temp,1024,0))>0) break;
-		}
-		send(client[j],playname[1],strlen(playname[0]),0);
-		while(1)
-		{
-			if ((rev = recv((intptr_t)client[j],temp,1024,0))>0) break;
-		}
-		send(client[j],playname[2],strlen(playname[0]),0);
-		while(1)
-		{
-			if ((rev = recv((intptr_t)client[j],temp,1024,0))>0) break;
+				send(client[k],playname[l],strlen(playname[l]),0);
+				while(1)
+				{
+						char tempp[1024];
+						memset(tempp,0,sizeof(tempp));
+						rev = recv((intptr_t)client[k],tempp,1024,0);
+						if(rev>0)
+						break;	
+				}
 		}
 	}
 }
-
 int main(void)
 {
 	int connfd,listenfd,sockfd; //connfd存放accept函数的返回值，listenfd表示监听的套接口，
 	//sockfd用于遍历client的数组
-	char playname[5][20]; //用户名 
 	socklen_t length;
-	fp=fopen("student.txt","w");
+	//fp=fopen("student.txt","w");
 	struct sockaddr_in server;
 	struct sockaddr tcpaddr;
 	pthread_t tid;
@@ -112,15 +79,20 @@ int main(void)
 		if(client[i]<0)
 		{
 			client[i]=connfd;
-			char hello[50]="进入房间成功，请输入你的昵称："; 
-			send(client[i],hello,strlen(hello)+1,0);
+			
+			char hello[1024]="进入房间成功，请输入你的昵称:"; 
+
+			send(client[i],hello,strlen(hello),0);
+			
 			char pname[1024];
+			memset(pname,0,sizeof(pname));
 			while(1)
 			{//得到用户名1--3 
-					if ((rev = recv((intptr_t)client[i],pname,1024,0))>0)
+					if ((rev = recv((intptr_t)connfd,pname,1024,0))>0)
 					{
-						printf("%s\n",pname); 
+						memset(playname[i],0,sizeof(playname[i]));
 						strcpy(playname[i],pname);
+						printf("%s\n",pname); 
 						break;
 					}
 			}
@@ -128,49 +100,70 @@ int main(void)
 		} //用户链接成功后，在client数组中保存用户套接口号
 		if(i==MAXFD-1)
 		{
+			sendplaymsg(); 
 			printf("房间已满员，游戏即将开始\n"); //若此时以达到用户最大值，则退出链接
-			sendallmsg();
 			char begin[50]="房间已满员，游戏即将开始\n"; 
 			for(i=0;i<=2;i++)
 			send(client[i],begin,strlen(begin)+1,0);
-			break; 
+			char tempp[1024];
+			memset(tempp,0,sizeof(tempp));
+			while(1)
+			{
+				rev = recv((intptr_t)client[0],tempp,1024,0);
+				if(rev>0)
+				break;				
+			}
+			memset(tempp,0,sizeof(tempp));
+			while(1)
+			{
+				rev = recv((intptr_t)client[1],tempp,1024,0);
+				if(rev>0)
+				break;				
+			}
+			memset(tempp,0,sizeof(tempp));
+			while(1)
+			{
+				rev = recv((intptr_t)client[1],tempp,1024,0);
+				if(rev>0)
+				break;				
+			}
+			break;
 		}
 		if(i>maxi) maxi=i;	
 	} //运行get_client函数，处理用户请求
 	while(1)//游戏运行 
-	{
-			
+	{		
+			//指定发牌 
+			char begin1[1024]="0fapai";
+			send(client[0],begin1,strlen(begin1),0);//让0发牌 
+			while(1)
+			{
+				rev = recv((intptr_t)client[0],begin1,1024,0);
+				if(rev>0)
+				break;				
+			}
+			char tempp[1024];
+			while(1)
+			{
+				for(int k=0;k<3;k++)
+				{
+					memset(tempp,0,sizeof(tempp));
+					rev = recv((intptr_t)client[k],tempp,1024,0);
+					printf("%s",tempp); 
+					if(rev>0)
+					{
+						int ta=tempp[0]-'0';
+						for(int k=0;k<2;k++)
+						{
+							if(ta!=k)
+							{
+								send(client[ta],tempp,strlen(tempp),0);//转发信息 
+							}
+						}
+					}	
+				}						
+			}	
 	} 
 	return 0;
 }
 //memset(buf,0,sizeof(buf)); //初始化buffer 
-/*
-void *get_client(void *sockfd) //get_client函数
-{
-	char buf[MAXLINE];
-	int rev;
-	if (((intptr_t)sockfd)<0)
-	printf("\n新用户进入聊天室失败\n");
-	else
-	{
-	printf("\n新用户进入聊天室...\n");
-	do
-	{
-		memset(buf,0,sizeof(buf)); //初始化buffer
-		if ((rev = recv((intptr_t)sockfd,buf,1024,0))<0)
-		printf("\n读取用户消息失败\n");
-		if (rev==0)
-		printf("\n用户终止链接\n");
-		else
-		{
-			printf("%s\n", buf); //若无异常，输出此用户消息
-			for(i=0;i<=maxi;i++)
-			send(client[i],buf,strlen(buf)+1,0);//将刚收到的用户消息分发给其他各用户
-			fputs(buf,fp);
-		}
-	}while (rev != 0);//当不再受到用户信息时，终止循环并且关闭套接口
-	fclose(fp);
-}
-	close((intptr_t)sockfd);
-	return(NULL);
-}*/
