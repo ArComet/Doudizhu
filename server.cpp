@@ -174,7 +174,8 @@ int main(void)
 							snd=send(client[l],tempp,strlen(tempp),0);//转发信息 
 						}
 					}
-				}							
+				}
+				break;
 			}	
 		}
 		break;
