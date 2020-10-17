@@ -68,7 +68,7 @@ void ShowUnderCard(){
 	for(int i=14;i<16;i++)
 		for(int j=1;j<=card[i];j++)
 				exist[count++] =i;*/
-	int num = 27;
+	int num = 29;
 	cout<<endl;
 	count = 3;
 	for(int i=0;i<3;i++)
@@ -124,6 +124,7 @@ void ShowOtherCard()//BeforeCardNum,AfterCardNum,PreModel.Card
 	cout<<endl;
 	cout<<endl;
 	int count =2;
+	int num = 23;
 	int BeforeCardNum = 13;
 	int AfterCardNum  =14;
 	int i;
@@ -131,7 +132,7 @@ void ShowOtherCard()//BeforeCardNum,AfterCardNum,PreModel.Card
 	{
 	cout<<"       ";
 	cout<<"┏━━━━┓";
-	for (i=0;i<23;i++)
+	for (i=0;i<num;i++)
 	cout<<"       ";
 	cout<<"┏━━━━┓";
 	cout<<endl;
@@ -141,7 +142,7 @@ void ShowOtherCard()//BeforeCardNum,AfterCardNum,PreModel.Card
 	if(BeforeCardNum<10)
 	cout<<"┃"<<BeforeCardNum<<"   ┃";	
 	else cout<<"┃"<<BeforeCardNum<<"  ┃";	
-	for (i=0;i<23;i++)
+	for (i=0;i<num;i++)
 	cout<<"       ";
 	if(AfterCardNum<10)
 	cout<<"┃"<<AfterCardNum<<"   ┃";
@@ -151,21 +152,21 @@ void ShowOtherCard()//BeforeCardNum,AfterCardNum,PreModel.Card
 
 	cout<<"       ";
 	cout<<"┃    ┃";
-	for (i=0;i<23;i++)
+	for (i=0;i<num;i++)
 	cout<<"       ";
 	cout<<"┃    ┃";
 	cout<<endl;
 	
 	cout<<"       ";
 	cout<<"┃    ┃";
-	for (i=0;i<23;i++)
+	for (i=0;i<num;i++)
 	cout<<"       ";	
 	cout<<"┃    ┃";
 	cout<<endl;
 	
 	cout<<"       ";
 	cout<<"┗━━━━┛";
-	for (i=0;i<23;i++)
+	for (i=0;i<num;i++)
 	cout<<"       ";	
 	cout<<"┗━━━━┛";
 	cout<<endl;
@@ -174,7 +175,7 @@ void ShowOtherCard()//BeforeCardNum,AfterCardNum,PreModel.Card
 }
 
 void ShowCard(int* card){
-		cout<<endl<<endl<<endl<<endl<<endl;
+		cout<<endl<<endl<<endl;
 		int count = 0;
 		int exist[21];
 		for (int i=3; i<14; i++)
@@ -187,7 +188,7 @@ void ShowCard(int* card){
 			for(int j=1;j<=card[i];j++)
 				exist[count++] =i;
 	cout<<endl<<endl<<endl;
-	const int num = 27;
+	const int num = 31;
 	for (int i=0;i<(num-count)/2;i++)
 		cout<<"       ";
 	for(int i = 0; i< count ; i++)
@@ -249,10 +250,14 @@ int SingleMod(){
 			player[Pl2].ClearPreModel();
 			player[Now].ClearPreModel();
 		}
-		while (1){	cout<<"[player"<<Host<<"]"<<player[Now].PreModel.ModelName<<endl;ShowCard(player[Now].PreModel.Card);
+		system("clear");
+		while (1){	cout<<"[player"<<Host<<"]"<<player[Now].PreModel.ModelName<<endl;;
 			cout<<"[player"<<Now<<"]Your card:"<<endl;
 			ShowUnderCard();
+			ShowCard(player[Now].PreModel.Card);
 			ShowOtherCard();
+
+
 			ShowCard(player[Now].Card);
 			int card[20];
 			ReadCard(card);
