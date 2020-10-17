@@ -249,7 +249,7 @@ int SingleMod(){
 			player[Pl1].ClearPreModel();
 			player[Pl2].ClearPreModel();
 			player[Now].ClearPreModel();
-		}
+		}//
 		system("clear");
 		while (1){	cout<<"[player"<<Host<<"]"<<player[Now].PreModel.ModelName<<endl;;
 			cout<<"[player"<<Now<<"]Your card:"<<endl;

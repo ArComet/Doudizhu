@@ -159,7 +159,7 @@ int main(void)
 				memset(tempp,0,sizeof(tempp));
 				while(1)
 				{
-					if(rev = recv((intptr_t)client[k],tempp,1024,0)>0)
+					if(rev = recv((intptr_t)client[0],tempp,1024,0)>0)
 						{
 							break;
 						}
