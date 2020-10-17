@@ -1,9 +1,4 @@
-/* 由于线程pthread库不是Linux系统默认的库，连接时需要使用库libpthread.a,所以程序中有使用pthread_create，在编译中要加-lpthread参数
-
-gcc client.c -o client -lpthread 
-
-*/
-
+/* 由于线程pthread库不是Linux系统默认的库，连接时需要使用库libpthread.a,所以程序中有使用pthread_create，在编译中要加-lpthread参数*/
 #include<stdlib.h>
 #include<stdio.h>
 #include<string.h>
@@ -18,69 +13,145 @@ gcc client.c -o client -lpthread
 #define TRUE 1
 #define PORT 5000
 int quit=0; //quit表示是否用户确定退出
-
+char player[5][1024];
+int snd,rev;
+char msg1[1024];
+int i;
 //close((intptr_t)sockfd);//关闭此套接口   游戏结束记得关套接口 
-
+int connfd;
 int selfnum;//自己的编号 //后续根据 getplayername(int connfd) char player[5][20];得出 
 
-char player[5][20];
-int snd,rev;
-void getplayername(int connfd)
+//是否是牌组信息+//是否是其他玩家出的牌1（区别于第一轮发牌0）+需要出牌的玩家的序号(目的序号)0-3(3都不需要出牌)+牌组信息 
+void dealcard(int goalnum,int cardlist[])//开局发牌 
+{//发送人selfnum+是否是牌组信息 
+	char str[1024];
+	memset(str,0,sizeof(str));
+	str[0]=selfnum+'0';
+	str[1]='1';
+	str[2]='1';
+	str[3]='0'+ goalnum;
+	for(int k=0;k<15;k++)
+	{
+		str[4+k]=cardlist[k];
+		snd=send(connfd,str,strlen(str),0);
+	}
+} 
+void sendcardmsg(int cardlist[])//发送自己出牌信息 
 {
-	char temp[1024];	
+	char str[1024];
+	memset(str,0,sizeof(str));
+	str[0]=selfnum+'0';
+	str[1]='1';
+	str[2]='0';
+	for(int k=0;k<15;k++)
+	{
+		str[3+k]=cardlist[k];
+		snd=send(connfd,str,strlen(str),0);
+	}
+}
+//是否是牌组信息+//活动类型（1抢地主2游戏结果3是否继续游戏）+是否需要回复0/1+回复信息 不需要收到的人回复：（抢地主的分数0-3/游戏结果/是否继续玩/）
+//                                                                                    需要回复：（抢地主开始信号需要回复分数） 
+void sendothermsg(int kind,int isneedreturn,int msgs)
+{//发送人selfnum+是否是牌组信息 
+	char str[1024];
+	memset(str,0,sizeof(str));
+	str[0]=selfnum+'0';
+	str[1]='0';
+	str[2]='0'+kind;
+	str[3]='0'+ isneedreturn;
+	str[4]=msgs;
+	snd=send(connfd,str,strlen(str),0);
+}
+void receivemsg()
+{
+	int sendnum;//发送人序号 
+	int iscardlist;//是不是牌组信息 
+	int kind;//0抢地主1游戏结果2是否继续
+	int kindmsg;//具体信息
+	int isfirst;//是不是第一次 
+	int goalnum;//发送方的目的序号第一次发牌 
+	int neednum;//需要出牌的人的序号 
+	int isneedreturn;//是否需要回复 
+	int listmsg[30];//牌组信息 
+	int yourcard[30];
+	char temp[1024];
+	memset(temp,0,sizeof(temp));
+	memset(listmsg,0,sizeof(listmsg));
+	memset(yourcard,0,sizeof(yourcard));
 	while(1)
 	{
 		memset(temp,0,sizeof(temp));
 		if ((rev = recv((intptr_t)connfd,temp,1024,0))>0)
 		{
-			strcpy(player[0],temp);
-			snd=send(connfd,temp,strlen(temp),0);
+			sendnum=temp[0]-'0';
+			iscardlist=temp[1]-'0';
+			if(iscardlist==1)
+			{
+				isfirst=temp[2]-'0';
+				if(isfirst==0)
+				{
+					for(int k=0;k<15;k++)
+					{
+						listmsg[k]=temp[3+k]-'0';	
+					} 
+				}
+				else
+				{
+					goalnum=temp[3]-'0';//自己序号与goalnum就是发给自己的牌
+					if(goalnum==selfnum)
+					{
+						for(int k=0;k<15;k++)
+						{
+							yourcard[k]=temp[4+k]-'0';	
+						} 
+					}					
+				}
+			}
+			else
+			{
+				kind=temp[2]-'0';
+				isneedreturn=temp[3]-'0';
+				kindmsg=temp[4]-'0';
+			}
 			break;
-		}
+		}	
 	}
-	while(1)
-	{
-		memset(temp,0,sizeof(temp));
-		if ((rev = recv((intptr_t)connfd,temp,1024,0))>0)
-		{
-			strcpy(player[1],temp);
-			snd=send(connfd,temp,strlen(temp),0);
-			break;
-		}
-	}
-	while(1)
-	{
-		memset(temp,0,sizeof(temp));
-		if ((rev = recv((intptr_t)connfd,temp,1024,0))>0)
-		{
-			strcpy(player[2],temp);
-			snd=send(connfd,temp,strlen(temp),0);
-		}
-	}
-}
-int sendcardmsg(int cardlist[]) //出的牌信息 
-{//发送自己出的牌 selfnum 
-	int flag;
-	//如果确认到返回1
-	return flag ;
-}
-int receivecardmsg(int *cardlist)//cardlist接收牌组信息(其他玩家的牌，客户端判断牌型) 
+		
+} 
+
+void getplayername()
 {
-	int num;//出牌人编号0-2除了本人 
-	
-	return num;
-}
-void receivecard(int *cardlist)//cardlist第一次接收牌自己牌组信息
-{
-	
+	char temp[1024];
+	memset(temp,0,sizeof(temp));
+	for(i=0;i<3;i++)
+	{
+		while(1)
+		{
+			memset(temp,0,sizeof(temp));
+			if ((rev = recv((intptr_t)connfd,temp,1024,0))>0)
+			{
+				strcpy(player[i],temp);
+				printf("%s\n",temp);
+				snd=send(connfd,temp,strlen(temp),0);
+				break;
+			}	
+		}
+	}	
+	for(int k=0;k<3;k++)
+	{
+		if(strcmp(player[k],msg1)==0)
+		{
+			selfnum=k;
+		}
+	}
 }
 
 int main(void)
 {
-	int connfd,slenth;
+	int slenth;
 	struct sockaddr_in server;
 	struct hostent *hp;
-	char honame[20],msg2[1024],msg1[1024],cln[102],qstr[]={"Quit"}; //qstr的值表示用户在输入"Quit"时和服务器断开链接
+	char honame[20],msg2[1024],cln[102],qstr[]={"Quit"}; //qstr的值表示用户在输入"Quit"时和服务器断开链接
 	pthread_t tid;
 	printf("请输入服务器IP地址\n");
 	scanf("%s*",honame);
@@ -106,6 +177,8 @@ int main(void)
 	while(1)
 	{
 		char buf[1024];
+		memset(buf,0,sizeof(buf));
+		memset(msg1,0,sizeof(msg1));
 		if ((rev = recv((intptr_t)connfd,buf,1024,0))>0)
 		{
 			printf("%s:",buf);//	printf("请输入你的用户昵称\n");	
@@ -115,11 +188,10 @@ int main(void)
 			break;
 		}
 	}
-	getplayername(connfd);
+	getplayername();
 	while(1)//客户端程序 
 	{
-	
+		
 	}
 	return 0; 
 }
-//strcat(msg1,msg2);//将消息前加上用户昵称 
