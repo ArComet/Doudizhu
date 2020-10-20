@@ -454,11 +454,17 @@ int main(void)
 				//fa pai
 			}
 			else
-			{for(int i =0;i<20;i++)
+			{
+			printf("wait card\n");
+			while(1)
+			{
 				revmsg();
 				if(goalnum==selfnum&&isfirst==1)
 				player.SetCard(msglist);
-				printf("wait card\n");
+				
+				break;
+			}
+
 			}
 			break;
 		}
@@ -496,6 +502,10 @@ int main(void)
 		if(isfirsts == 1)
 		{
 			player.SetCard(cardlists);
+			ShowUnderCard();
+			ShowCard(player.PreModel.Card);
+			ShowOtherCard();
+			ShowCard(player.Card);
 		}
 		else
 		{
