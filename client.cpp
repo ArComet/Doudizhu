@@ -78,7 +78,7 @@ void ReadCard(int* card){
 		}
 	}
 }
-void ShowUnderCard(){
+void ShowUnderCard(int *card){
 	int count = 0;
 	int exist[21];
 	/*for (int i=3; i<14; i++)
@@ -95,7 +95,7 @@ void ShowUnderCard(){
 	count = 3;
 	for(int i=0;i<3;i++)
 	{
-		exist[i] = 13;
+		exist[i] = card[i];
 	}
 	for (int i=0;i<(num-count)/2;i++)
 	cout<<"       ";
@@ -140,15 +140,15 @@ void ShowUnderCard(){
 		cout<<"┗━━━━┛";
 		cout<<endl;
 }
-void ShowOtherCard()//BeforeCardNum,AfterCardNum,PreModel.Card
+void ShowOtherCard(int beforenum,int afternum)//BeforeCardNum,AfterCardNum,PreModel.Card
 {
 	cout<<endl;
 	cout<<endl;
 	cout<<endl;
 	int count =2;
 	int num = 23;
-	int BeforeCardNum = 13;
-	int AfterCardNum  =14;
+	int BeforeCardNum = beforenum;
+	int AfterCardNum  = afternum;
 	int i;
 	if(BeforeCardNum>0&&AfterCardNum>0)
 	{
@@ -210,7 +210,7 @@ void ShowCard(int* card){
 			for(int j=1;j<=card[i];j++)
 				exist[count++] =i;
 	cout<<endl<<endl<<endl;
-	const int num = 31;
+	const int num = 29;
 	for (int i=0;i<(num-count)/2;i++)
 		cout<<"       ";
 	for(int i = 0; i< count ; i++)
@@ -342,11 +342,12 @@ void sendmsg(int goalnum,int isfirst,int cardlist[])
 {
 	char str[1024];
 	memset(str,0,sizeof(str));
-	str[0]='0'+goalnum;
-	str[1]='0'+isfirst;
+	str[0]='0'+selfnum;
+	str[1]='0'+goalnum;
+	str[2]='0'+isfirst;
 	for(int k=1;k<16;k++)
 	{
-		str[1+k]='0'+cardlist[k];
+		str[2+k]='0'+cardlist[k];
 	}
 	snd=send(connfd,str,strlen(str),0);//发送消息给服务器
 }
@@ -364,6 +365,7 @@ void revmsg(void)
 		if ((rev = recv((intptr_t)connfd,sbuf,1024,0))>0)
 		{
 			//snd=send(connfd,buf,strlen(buf),0);//发送消息给服务器
+			printf("%s\n",sbuf);
 			break;
 		}
 	}
@@ -413,7 +415,7 @@ int main(void)
 		memset(msg1,0,sizeof(msg1));
 		if ((rev = recv((intptr_t)connfd,buf,1024,0))>0)
 		{
-			printf("%s:",buf);//	printf("请输入你的用户昵称\n");	
+			printf("%s",buf);//	printf("请输入你的用户昵称\n");	
 			scanf("%s",msg1);
 			strcpy(cln,msg1); //保存用户昵称在名为cln的数组中
 			snd=send(connfd,msg1,strlen(msg1),0);//发送消息给服务器
@@ -427,7 +429,7 @@ int main(void)
 		memset(buf,0,sizeof(buf));
 		if ((rev = recv((intptr_t)connfd,buf,1024,0))>0)
 		{			
-			printf("%s",buf);//	
+			printf("%s\n",buf);//	
 			snd=send(connfd,buf,strlen(buf),0);//发送消息给服务器
 			break;
 		}
@@ -436,6 +438,17 @@ int main(void)
 	char buf[1024];
 	memset(buf,0,sizeof(buf));
 	Game player;
+	int undercard[10];
+	int Pl1=(selfnum+1)%3,Pl2=(selfnum+2)%3;
+	int beforenum,afternum,restnum;
+	int last_before_num,last_after_num;
+	if(Pl2 == 0) beforenum = 20;
+	else beforenum = 17;
+	if(Pl1 ==0) afternum =20;
+	else afternum = 17;
+	if(selfnum==0) restnum =20;
+	else restnum = 17;
+	memset(undercard,0,sizeof(undercard));
 	while(1)
 	{
 		if ((rev = recv((intptr_t)connfd,buf,1024,0))>0)
@@ -450,97 +463,214 @@ int main(void)
 				dealcard(1,card1);
 				dealcard(2,card2);
 				player.AddCard(cardex);
+				int count =0;
+						for(int th=1;th<16;th++)
+						{
+							if(cardex[th]==1) undercard[count++] = th;
+							if(cardex[th]==2){
+								undercard[count++] = th;
+								undercard[count++] = th;
+							}
+							if(cardex[th] == 3)
+							{
+								undercard[count++] = th;
+								undercard[count++] = th;
+								undercard[count++] = th;
+							}
+
+						}
+				sleep(1);
 				sendmsg(selfnum,1,cardex);
+
 				//fa pai
 			}
 			else
 			{
-			printf("wait card\n");
-			while(1)
-			{
-				revmsg();
-				if(goalnum==selfnum&&isfirst==1)
-				player.SetCard(msglist);
-				
-				break;
-			}
+				printf("%d\n",selfnum);
+				printf("wait card\n");
+				while(1)
+				{
+					revmsg();
+					if(goalnum==selfnum&&isfirst==1)
+					{
+						player.SetCard(msglist);
+						break;
+					}
+					
+				}
+				while(1)
+				{
+					revmsg();
+					if(sendnum==0&&isfirst==1)
+					{
+						printf("dizpai:\n");
+						int count = 0;
+						for(int th=1;th<16;th++)
+						{
+							if(msglist[th]==1) undercard[count++] = th;
+							if(msglist[th]==2){
+								undercard[count++] = th;
+								undercard[count++] = th;
+							}
+							if(msglist[th] == 3)
+							{
+								undercard[count++] = th;
+								undercard[count++] = th;
+								undercard[count++] = th;
+							}
 
+						}
+						printf("\n");
+						ShowUnderCard(undercard);
+						ShowCard(player.PreModel.Card);
+						ShowOtherCard(beforenum,afternum);
+						ShowCard(player.Card);
+
+						break;
+					}
+				}				
 			}
 			break;
 		}
 		
 		
 	}
-	printf("%d\n",selfnum);
-	int Pl1=(selfnum+1)%3,Pl2=(selfnum+2)%3;
-	int beforenum,afternum,restnum;
-	if(Pl2 == 0) beforenum = 20;
-	else beforenum = 17;
-	if(Pl1 ==0) afternum =20;
-	else afternum = 17;
-	if(selfnum==0) restnum =20;
-	else restnum = 17;
-	if(selfnum == 0)
+	
+
+	last_after_num = afternum;
+	last_before_num = beforenum;//last time
+	if(selfnum == 0)//game start
 	{
-		ShowUnderCard();
+		while(1)
+		{
+		system("clear");
+		ShowUnderCard(undercard);
 		ShowCard(player.PreModel.Card);
-		ShowOtherCard();
+		ShowOtherCard(beforenum,afternum);
 		ShowCard(player.Card);
 		int card[20];
 		ReadCard(card);
-		sendmsg(Pl1,0,card);
+		
+		int flag=player.PlayCard(card);
+
+		if (flag==0){
+			if (player.CheckGameEnd()) return 0; 
+			sendmsg(Pl1,0,card);
+			system("clear");
+			player.SetPreModel(card);
+			ShowUnderCard(undercard);
+			ShowCard(player.PreModel.Card);
+			ShowOtherCard(beforenum,afternum);
+			ShowCard(player.Card);
+			
+			break;
+
+		}
+		else if (flag==5) {
+			sendmsg(Pl1,0,card);
+			system("clear");
+			ShowUnderCard(undercard);
+			ShowCard(player.PreModel.Card);
+			ShowOtherCard(beforenum,afternum);
+			ShowCard(player.Card);
+			break;
+		}
+		else if (flag==1) cout<<"no model!\n";
+		else if (flag==2) cout<<"no engouh card!\n";
+		else if (flag==3) cout<<"can't match the premodel!\n";
+		else if (flag==4) cout<<"can't win the premodel!\n";
+		else cout<<"unexpected error!\n";
+
 		//sendmsg(pl2,0,card);
 
-	}
-//int sendnums,isfirsts;
-//int cardlists[30];
+		}
 
+
+	}
+
+//int sendnum;
+//int goalnum;
+//int isfirst;
+//int msglist[30];
 
 	while(1)
 	{
 		revmsg();
-		if(isfirsts == 1)
-		{
-			player.SetCard(cardlists);
-			ShowUnderCard();
-			ShowCard(player.PreModel.Card);
-			ShowOtherCard();
-			ShowCard(player.Card);
-		}
-		else
-		{
+
 			int count = 0;
-			for(int i =0;i<20;i++)
+			for(int i =1;i<16;i++)
 			{
-				if(cardlists[i]!=0)  count+=cardlists[i];
+				if(msglist[i]!=0)  count+=msglist[i];
 			}
-			if (count!=0) player.SetPreModel(cardlists);
-			if(sendnums == Pl2)
+			if (count!=0) player.SetPreModel(msglist);//may exist problem
+			if(sendnum == Pl2)
 			{
-				beforenum -=count;
-				ShowUnderCard();
-				ShowCard(player.PreModel.Card);
-				ShowOtherCard();
-				ShowCard(player.Card);
-				int card[20];
-				ReadCard(card);
-				count = 0;
-				for(int i=0 ; i<20; i++)
-					count+=card[i];
-				restnum-=count;
-				if(restnum ==0) return 0;
-				sendmsg(Pl1,0,card);
-				//sendmsg(pl2,0,card);
+				if(count != 0 ) beforenum -= count;
+				cout<<"beforecard:"<<beforenum<<endl;
+				if(last_after_num == afternum&&last_before_num == beforenum)
+				{
+					player.ClearPreModel();
+
+				}
+				else{
+					last_after_num = afternum;
+					last_before_num = beforenum;
+				}
+				while(1)
+				{
+					system("clear");
+					ShowUnderCard(undercard);
+					ShowCard(player.PreModel.Card);
+					ShowOtherCard(beforenum,afternum);
+					ShowCard(player.Card);
+					int card[20];
+					ReadCard(card);
+					int flag=player.PlayCard(card);
+
+					if (flag==0){
+					if (player.CheckGameEnd()) return 0; 
+					sendmsg(Pl1,0,card);
+					player.SetPreModel(card);
+					system("clear");
+					ShowUnderCard(undercard);
+					ShowCard(player.PreModel.Card);
+					ShowOtherCard(beforenum,afternum);
+					ShowCard(player.Card);
+					break;
+					}
+					else if (flag==5) {
+					sendmsg(Pl1,0,card);
+					system("clear");
+					player.SetPreModel(card);
+					ShowUnderCard(undercard);
+					ShowCard(player.PreModel.Card);
+					ShowOtherCard(beforenum,afternum);
+					ShowCard(player.Card);
+					break;
+					}
+					else if (flag==1) cout<<"no model!\n";
+					else if (flag==2) cout<<"no engouh card!\n";
+					else if (flag==3) cout<<"can't match the premodel!\n";
+					else if (flag==4) cout<<"can't win the premodel!\n";
+					else cout<<"unexpected error!\n";
+
+
+				}				
+
+
+
+				
 			}
-			if(sendnums == Pl1)
+			if(sendnum == Pl1)
 			{
+				system("clear");
 				afternum -=count;
-				ShowUnderCard();
+				ShowUnderCard(undercard);
 				ShowCard(player.PreModel.Card);
-				ShowOtherCard();
+				ShowOtherCard(beforenum,afternum);
 				ShowCard(player.Card);
 			}
-		}
+		
 	}
 	
 	

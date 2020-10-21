@@ -126,7 +126,7 @@ int main(void)
 			break;
 		}
 		if(i>maxi) maxi=i;	
-	} //运行get_client函数，处理用户请求
+	} 
 	for(int k=0;k<3;k++)//指定发牌 
 	{
 		send(client[k],playname[0],strlen(playname[0]),0);//让0发牌 				
@@ -146,6 +146,7 @@ int main(void)
 						int ta=tempp[0]-'0';
 						int tb=tempp[1]-'0';
 						snd=send(client[tb],tempp,strlen(tempp),0);
+						printf("%d\n",tb);
 						snd=send(client[ta],tempp,strlen(tempp),0);
 						break;
 					}
@@ -176,7 +177,8 @@ int main(void)
 					}
 				}
 				break;
-			}	
+			}
+			break;	
 		}
 		break;
 } 
