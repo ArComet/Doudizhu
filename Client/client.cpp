@@ -21,7 +21,7 @@ int i;
 //close((intptr_t)sockfd);//关闭此套接口   游戏结束记得关套接口 
 int connfd;
 int selfnum;//自己的编号 //后续根据 getplayername(int connfd) char player[5][20];得出 
-
+int Pl1,Pl2;
 
 
 void ReadCard(int* card){
@@ -171,12 +171,16 @@ void ShowOtherCard(int beforenum,int afternum)//BeforeCardNum,AfterCardNum,PreMo
 	else 	cout<<"┃"<<AfterCardNum<<"  ┃";
 	cout<<endl;
 		
-
-	cout<<"       ";
+	cout<<player[Pl1];
+	for(i=0;i<7-strlen(player[Pl1]);i++)
+	cout<<" ";
 	cout<<"┃    ┃";
 	for (i=0;i<num;i++)
 	cout<<"       ";
 	cout<<"┃    ┃";
+		for(i=0;i<7-strlen(player[Pl1]);i++)
+	cout<<" ";
+	cout<<player[Pl2];
 	cout<<endl;
 	
 	cout<<"       ";
@@ -196,7 +200,7 @@ void ShowOtherCard(int beforenum,int afternum)//BeforeCardNum,AfterCardNum,PreMo
 	
 }
 
-void ShowCard(int* card){
+void ShowCard(int* card,int flag){
 		cout<<endl<<endl<<endl;
 		int count = 0;
 		int exist[21];
@@ -253,6 +257,13 @@ void ShowCard(int* card){
 		for(int i = 0; i<count ; i++)
 		cout<<"┗━━━━┛";
 		cout<<endl;
+	if(flag == 1)
+	{
+
+		// cout<<"正在等待出牌"<<endl;
+		printf("正在等待出牌\n");
+	}
+	
 }
 
 void dealcard(int goalnum,int cardlist[])
@@ -327,8 +338,10 @@ void revmsg(void)
 	char sbuf[1024];
 	memset(msglist,0,sizeof(msglist));
 	memset(sbuf,0,sizeof(sbuf));
+	// cout<<"正在等待出牌";
 	while(1)
 	{
+
 		if ((rev = recv((intptr_t)connfd,sbuf,1024,0))>0)
 		{
 			//snd=send(connfd,buf,strlen(buf),0);//发送消息给服务器
@@ -404,9 +417,10 @@ int main(void)
 	}
 	char buf[1024];
 	memset(buf,0,sizeof(buf));
-	Game player;
+	Game play;
 	int undercard[10];
-	int Pl1=(selfnum+1)%3,Pl2=(selfnum+2)%3;
+	Pl1=(selfnum+1)%3;
+	Pl2=(selfnum+2)%3;
 	int beforenum,afternum,restnum;
 	int last_before_num,last_after_num;
 	if(Pl2 == 0) beforenum = 20;
@@ -426,10 +440,10 @@ int main(void)
 			{
 				printf("fapai\n");
 				int card1[20],card2[20],cardex[20];
-				player.ShuffleCard(card1,card2,cardex);
+				play.ShuffleCard(card1,card2,cardex);
 				dealcard(1,card1);
 				dealcard(2,card2);
-				player.AddCard(cardex);
+				play.AddCard(cardex);
 				int count =0;
 						for(int th=1;th<16;th++)
 						{
@@ -460,7 +474,7 @@ int main(void)
 					revmsg();
 					if(goalnum==selfnum&&isfirst==1)
 					{
-						player.SetCard(msglist);
+						play.SetCard(msglist);
 						break;
 					}
 					
@@ -489,9 +503,9 @@ int main(void)
 						}
 						printf("\n");
 						ShowUnderCard(undercard);
-						ShowCard(player.PreModel.Card);
+						ShowCard(play.PreModel.Card,0);
 						ShowOtherCard(beforenum,afternum);
-						ShowCard(player.Card);
+						ShowCard(play.Card,1);
 
 						break;
 					}
@@ -512,23 +526,23 @@ int main(void)
 		{
 		system("clear");
 		ShowUnderCard(undercard);
-		ShowCard(player.PreModel.Card);
+		ShowCard(play.PreModel.Card,0);
 		ShowOtherCard(beforenum,afternum);
-		ShowCard(player.Card);
+		ShowCard(play.Card,0);
 		int card[20];
 		ReadCard(card);
 		
-		int flag=player.PlayCard(card);
+		int flag=play.PlayCard(card);
 
 		if (flag==0){
-			if (player.CheckGameEnd()) return 0; 
+			if (play.CheckGameEnd()) return 0; 
 			sendmsg(Pl1,0,card);
 			system("clear");
-			player.SetPreModel(card);
+			play.SetPreModel(card);
 			ShowUnderCard(undercard);
-			ShowCard(player.PreModel.Card);
+			ShowCard(play.PreModel.Card,0);
 			ShowOtherCard(beforenum,afternum);
-			ShowCard(player.Card);
+			ShowCard(play.Card,1);
 			
 			break;
 
@@ -537,9 +551,9 @@ int main(void)
 			sendmsg(Pl1,0,card);
 			system("clear");
 			ShowUnderCard(undercard);
-			ShowCard(player.PreModel.Card);
+			ShowCard(play.PreModel.Card,0);
 			ShowOtherCard(beforenum,afternum);
-			ShowCard(player.Card);
+			ShowCard(play.Card,1);
 			break;
 		}
 		else if (flag==1) cout<<"no model!\n";
@@ -562,58 +576,61 @@ int main(void)
 
 	while(1)
 	{
+		
 		revmsg();
-
+			system("clear");
+			// cout<<"正在等待"<<player[sendnum]<<"出牌";
 			int count = 0;
 			for(int i =1;i<16;i++)
 			{
 				if(msglist[i]!=0)  count+=msglist[i];
 			}
-			if (count!=0) player.SetPreModel(msglist);//may exist problem
+			if (count!=0) play.SetPreModel(msglist);//may exist problem
 			if(sendnum == Pl2)
 			{
 				if(count != 0 ) beforenum -= count;
 				cout<<"beforecard:"<<beforenum<<endl;
 				if(last_after_num == afternum&&last_before_num == beforenum)
 				{
-					player.ClearPreModel();
+					play.ClearPreModel();
 
 				}
 				else{
 					last_after_num = afternum;
 					last_before_num = beforenum;
 				}
+				
 				while(1)
 				{
-					system("clear");
+					// system("clear");
 					ShowUnderCard(undercard);
-					ShowCard(player.PreModel.Card);
+					ShowCard(play.PreModel.Card,0);
 					ShowOtherCard(beforenum,afternum);
-					ShowCard(player.Card);
+					ShowCard(play.Card,0);
 					int card[20];
 					ReadCard(card);
-					int flag=player.PlayCard(card);
+					int flag=play.PlayCard(card);
 
 					if (flag==0){
-					if (player.CheckGameEnd()) return 0; 
-					sendmsg(Pl1,0,card);
-					player.SetPreModel(card);
-					system("clear");
-					ShowUnderCard(undercard);
-					ShowCard(player.PreModel.Card);
-					ShowOtherCard(beforenum,afternum);
-					ShowCard(player.Card);
-					break;
+						if (play.CheckGameEnd()) return 0; 
+						sendmsg(Pl1,0,card);
+						play.SetPreModel(card);
+						system("clear");
+						ShowUnderCard(undercard);
+						ShowCard(play.PreModel.Card,0);
+						ShowOtherCard(beforenum,afternum);
+						ShowCard(play.Card,1);
+						break;
 					}
 					else if (flag==5) {
-					sendmsg(Pl1,0,card);
-					system("clear");
-					player.SetPreModel(card);
-					ShowUnderCard(undercard);
-					ShowCard(player.PreModel.Card);
-					ShowOtherCard(beforenum,afternum);
-					ShowCard(player.Card);
-					break;
+						sendmsg(Pl1,0,card);
+						system("clear");
+						play.SetPreModel(card);
+						ShowUnderCard(undercard);
+						ShowCard(play.PreModel.Card,0);
+						ShowOtherCard(beforenum,afternum);
+						ShowCard(play.Card,1);
+						break;
 					}
 					else if (flag==1) cout<<"no model!\n";
 					else if (flag==2) cout<<"no engouh card!\n";
@@ -623,19 +640,20 @@ int main(void)
 
 
 				}				
-
+				// cout<<"正在等待"<<player[sendnum]<<"出牌";
 
 
 				
 			}
 			if(sendnum == Pl1)
 			{
-				system("clear");
+				// system("clear");
 				afternum -=count;
 				ShowUnderCard(undercard);
-				ShowCard(player.PreModel.Card);
+				ShowCard(play.PreModel.Card,0);
 				ShowOtherCard(beforenum,afternum);
-				ShowCard(player.Card);
+				ShowCard(play.Card,1);
+				// cout<<"正在等待"<<player[Pl1]<<"出牌";
 			}
 		
 	}

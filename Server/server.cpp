@@ -11,8 +11,9 @@
 #include<pthread.h>
 #define MAXLINE 1000 //在一条消息中最大的输出字符数
 #define LISTENQ 20 //最大监听队列
-#define PORT 5000 //监听端口
 #define MAXFD 3 //最大的在线用户数量
+
+int PORT = 5000;
 int rev,snd;
 FILE *fp;
 int i,maxi=-1;//maxi表示当前client数组中最大的用户的i值
@@ -52,10 +53,11 @@ int main(void)
 	server.sin_family=AF_INET;
 	server.sin_port=htons(PORT);
 	server.sin_addr.s_addr=htonl(INADDR_ANY);
-	if( bind(listenfd,(struct sockaddr*)&server,sizeof(server))<0 )
+	while( bind(listenfd,(struct sockaddr*)&server,sizeof(server))<0 )
 	{
-		printf("绑定套接口失败\n");
-		exit(1); //绑定套接口
+		//printf("绑定套接口失败\n");
+		PORT++;//绑定套接口
+		server.sin_port=htons(PORT);
 	}
 	length=sizeof(server);
 	if(getsockname(listenfd,(struct sockaddr*)&server,&length)<0)
