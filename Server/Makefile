@@ -1,2 +1,2 @@
-client:../game/game.cpp
-	g++ ../game/game.cpp  server.cpp -o server
+server:../Game/game.cpp server.cpp
+	g++ ../Game/game.cpp  server.cpp -o server

@@ -11,7 +11,7 @@
 #include<pthread.h>
 #define TRUE 1
 #define PORT 5000
-#include"../game/game.cpp"
+#include"../Game/game.cpp"
 
 int quit=0; //quit表示是否用户确定退出
 char player[5][1024];
