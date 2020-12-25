@@ -22,7 +22,7 @@ int i;
 int connfd;
 int selfnum;//自己的编号 //后续根据 getplayername(int connfd) char player[5][20];得出 
 int Pl1,Pl2;
-
+int now=0;
 
 void ReadCard(int* card){
 	
@@ -560,7 +560,12 @@ int main(void)
 			play.SetPreModel(card,selfnum);
 			ShowUnderCard(undercard);
 			if(play.PrePlayer>=0)
-			cout<<"出牌的人为:"<<player[play.PrePlayer]<<endl;
+			{
+				for (int i=0;i<(29-1)/2;i++)
+				cout<<"       ";
+				cout<<"出牌的人为:"<<player[play.PrePlayer]<<endl;
+				
+			}
 			ShowCard(play.PreModel.Card,0);
 			ShowOtherCard(beforenum,afternum);
 			ShowCard(play.Card,1);
@@ -573,7 +578,12 @@ int main(void)
 			system("clear");
 			ShowUnderCard(undercard);
 			if(play.PrePlayer>=0)
-			cout<<"出牌的人为:"<<player[play.PrePlayer]<<endl;
+			{
+				for (int i=0;i<(29-1)/2;i++)
+				cout<<"       ";
+				cout<<"出牌的人为:"<<player[play.PrePlayer]<<endl;
+				
+			}
 			ShowCard(play.PreModel.Card,0);
 			ShowOtherCard(beforenum,afternum);
 			ShowCard(play.Card,1);
@@ -610,6 +620,7 @@ int main(void)
 			}
 			if(sendnum == Pl2)
 			{
+				now++;
 				if(count != 0 ) 
 				{
 					play.SetPreModel(msglist,Pl2);//may exist problem
@@ -617,7 +628,7 @@ int main(void)
 
 				}
 				if(beforenum == 0){
-					cout<<"Game is over!"<<endl<<player[Pl2]<<"win the game!"<<endl;
+					cout<<"Game is over!"<<endl<<player[Pl2]<<" win the game!"<<endl;
 					return 0;
 				} 
 				// cout<<"beforecard:"<<beforenum<<endl;
@@ -636,7 +647,12 @@ int main(void)
 					// system("clear");
 					ShowUnderCard(undercard);
 					if(play.PrePlayer>=0)
-					cout<<"出牌的人为:"<<player[play.PrePlayer]<<endl;
+					{
+						for (int i=0;i<(29-1)/2;i++)
+						cout<<"       ";
+						cout<<"出牌的人为:"<<player[play.PrePlayer]<<endl;
+						
+					}
 					ShowCard(play.PreModel.Card,0);
 					ShowOtherCard(beforenum,afternum);
 					ShowCard(play.Card,0);
@@ -651,7 +667,12 @@ int main(void)
 						system("clear");
 						ShowUnderCard(undercard);
 						if(play.PrePlayer>=0)
-						cout<<"出牌的人为:"<<player[play.PrePlayer]<<endl;
+						{
+							for (int i=0;i<(29-1)/2;i++)
+							cout<<"       ";
+							cout<<"出牌的人为:"<<player[play.PrePlayer]<<endl;
+							
+						}
 						ShowCard(play.PreModel.Card,0);
 						ShowOtherCard(beforenum,afternum);
 						ShowCard(play.Card,1);
@@ -669,7 +690,11 @@ int main(void)
 						// play.SetPreModel(card);
 						ShowUnderCard(undercard);
 						if(play.PrePlayer>=0)
-						cout<<"出牌的人为:"<<player[play.PrePlayer]<<endl;
+						{
+							for (int i=0;i<(29-1)/2;i++)
+							cout<<"       ";
+							cout<<"出牌的人为:"<<player[play.PrePlayer]<<endl;
+						}
 						ShowCard(play.PreModel.Card,0);
 						ShowOtherCard(beforenum,afternum);
 						ShowCard(play.Card,1);
@@ -690,6 +715,7 @@ int main(void)
 			}
 			if(sendnum == Pl1)
 			{
+				now++;
 				// system("clear");
 				if(count != 0 ) 
 				{
@@ -697,12 +723,16 @@ int main(void)
 					afternum -= count;
 				}
 				if(afternum == 0){
-					cout<<"Game is over!"<<endl<<player[Pl1]<<"win the game!"<<endl;
+					cout<<"Game is over!"<<endl<<player[Pl1]<<" win the game!"<<endl;
 					return 0;
 				} 
 				ShowUnderCard(undercard);
 				if(play.PrePlayer>=0)
-				cout<<"出牌的人为:"<<player[play.PrePlayer]<<endl;
+				{
+						for (int i=0;i<(29-1)/2;i++)
+						cout<<"       ";
+					cout<<"出牌的人为:"<<player[play.PrePlayer]<<endl;
+				}
 				ShowCard(play.PreModel.Card,0);
 				ShowOtherCard(beforenum,afternum);
 				ShowCard(play.Card,1);
