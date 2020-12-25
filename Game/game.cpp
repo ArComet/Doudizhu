@@ -229,6 +229,7 @@ struct Game{
 	}
 	void ClearPreModel(){
 		PreModel=CardModel();
+		PrePlayer=-1;
 	}
 	bool Model_in_Hand(CardModel model){
 		if (model.type1==-1) return false;

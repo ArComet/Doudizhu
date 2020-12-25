@@ -559,6 +559,7 @@ int main(void)
 			
 			play.SetPreModel(card,selfnum);
 			ShowUnderCard(undercard);
+			if(play.PrePlayer>=0)
 			cout<<"出牌的人为:"<<player[play.PrePlayer]<<endl;
 			ShowCard(play.PreModel.Card,0);
 			ShowOtherCard(beforenum,afternum);
@@ -571,6 +572,7 @@ int main(void)
 			sendmsg(Pl1,0,card);
 			system("clear");
 			ShowUnderCard(undercard);
+			if(play.PrePlayer>=0)
 			cout<<"出牌的人为:"<<player[play.PrePlayer]<<endl;
 			ShowCard(play.PreModel.Card,0);
 			ShowOtherCard(beforenum,afternum);
@@ -633,6 +635,7 @@ int main(void)
 				{
 					// system("clear");
 					ShowUnderCard(undercard);
+					if(play.PrePlayer>=0)
 					cout<<"出牌的人为:"<<player[play.PrePlayer]<<endl;
 					ShowCard(play.PreModel.Card,0);
 					ShowOtherCard(beforenum,afternum);
@@ -647,6 +650,7 @@ int main(void)
 						play.SetPreModel(card,selfnum);
 						system("clear");
 						ShowUnderCard(undercard);
+						if(play.PrePlayer>=0)
 						cout<<"出牌的人为:"<<player[play.PrePlayer]<<endl;
 						ShowCard(play.PreModel.Card,0);
 						ShowOtherCard(beforenum,afternum);
@@ -664,6 +668,7 @@ int main(void)
 						system("clear");
 						// play.SetPreModel(card);
 						ShowUnderCard(undercard);
+						if(play.PrePlayer>=0)
 						cout<<"出牌的人为:"<<player[play.PrePlayer]<<endl;
 						ShowCard(play.PreModel.Card,0);
 						ShowOtherCard(beforenum,afternum);
@@ -686,12 +691,17 @@ int main(void)
 			if(sendnum == Pl1)
 			{
 				// system("clear");
-				afternum -=count;
+				if(count != 0 ) 
+				{
+					play.SetPreModel(msglist,Pl1);//may exist problem
+					afternum -= count;
+				}
 				if(afternum == 0){
 					cout<<"Game is over!"<<endl<<player[Pl1]<<"win the game!"<<endl;
 					return 0;
 				} 
 				ShowUnderCard(undercard);
+				if(play.PrePlayer>=0)
 				cout<<"出牌的人为:"<<player[play.PrePlayer]<<endl;
 				ShowCard(play.PreModel.Card,0);
 				ShowOtherCard(beforenum,afternum);
