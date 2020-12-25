@@ -12,6 +12,7 @@
 #define TRUE 1
 #define PORT 5000
 #include"../Game/game.cpp"
+using namespace std;
 
 int quit=0; //quit表示是否用户确定退出
 char player[5][1024];
@@ -376,6 +377,11 @@ void revmsg(void)
 	}
 }
 
+void* play_bgmusic(void* args){
+	system("mplayer ../Music/bg_music.mp3 >music_log.txt &");
+	return 0;
+}
+
 int sendnums,isfirsts;
 int cardlists[30];
 int main(void)
@@ -433,6 +439,8 @@ int main(void)
 		}
 
 	}
+	pthread_t tid_bg;
+	pthread_create(&tid_bg,NULL,play_bgmusic,NULL);//bg_music
 	char buf[1024];
 	memset(buf,0,sizeof(buf));
 	Game play;
