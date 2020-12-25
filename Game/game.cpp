@@ -189,11 +189,13 @@ struct CardModel{
 struct Game{
 	int Card[RANGE];
 	CardModel PreModel;
+	int PrePlayer;
 	bool flag_lord;
 	//构造函数，清空Card和PreModel
 	Game(){
 		for (int i=1; i<RANGE; i++) Card[i]=0;
 		PreModel=CardModel();
+		PrePlayer=-1;
 	}
 	/*	洗牌发牌函数，由某一玩家调用，传入两个数组，
 		调用后设置此玩家的Card，并其他玩家的Card保存在参量中导出
@@ -221,8 +223,9 @@ struct Game{
 	void AddCard(int _Card[RANGE]){
 		for (int i=1; i<RANGE; i++) Card[i]+=_Card[i];
 	}
-	void SetPreModel(int _Card[RANGE]){
+	void SetPreModel(int _Card[RANGE],int Player=-1){
 		PreModel=CardModel(_Card);
+		PrePlayer=Player;
 	}
 	void ClearPreModel(){
 		PreModel=CardModel();

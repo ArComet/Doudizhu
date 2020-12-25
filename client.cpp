@@ -11,7 +11,7 @@
 #include<pthread.h>
 #define TRUE 1
 #define PORT 5000
-#include"../Game/game.cpp"
+#include"game.cpp"
 
 int quit=0; //quit表示是否用户确定退出
 char player[5][1024];
@@ -21,7 +21,7 @@ int i;
 //close((intptr_t)sockfd);//关闭此套接口   游戏结束记得关套接口 
 int connfd;
 int selfnum;//自己的编号 //后续根据 getplayername(int connfd) char player[5][20];得出 
-int Pl1,Pl2;
+
 
 
 void ReadCard(int* card){
@@ -44,55 +44,37 @@ void ReadCard(int* card){
 		cin.getline(s,sizeof(s));
 
 	}
-	string tmp="";
 	for (int i=0;i<strlen(s);i++)
 	{
-		// if(count>=n) break;
-		// x = 0;
-		// if(s[i]<='9'&&s[i]>='2') x = s[i]-'0';
-		// else if(s[i]=='1')
-		// {
-		// 	if(s[i+1]=='0')
-		// 	{
-		// 		x = 10;
-		// 		i++;
-		// 	}
-		// }
-		// else if(s[i]=='j'||s[i]=='J') x=11;
-		// else if(s[i]=='q'||s[i]=='Q') x=12;
-		// else if(s[i]=='k'||s[i]=='K') x=13;
-		// else if(s[i]=='a'||s[i]=='A') x=1;
-		// else if(s[i]==s1[0]&&s[i+1]==s[1]&&s[i+2]==s[2]&&s[i+3]==s[3]){
-		// 	x=15;
-		// 	i+=3;
-		// }
-		// else if(s[i]==s2[0]&&s[i]==s2[1]&&s[i]==s2[2]&&s[i]==s2[3]){
-		// 	x=14;
-		// 	i+=3;
-		// }
-		// if(x!=0)
-		// {
-		// 	card[x]++;
-		// 	count++;
-		// }
-		if (s[i]!=' ') tmp+=s[i];
-		if (s[i]==' ' || i==strlen(s)-1){
-			if (tmp.size()==1 && (tmp>="1" || tmp<="9") ){
-				x=tmp[0]-'0';
-			}
-			else if (tmp=="10") x=10;
-			else if(tmp=="j"||tmp=="J"||tmp=="11") x=11;
-			else if(tmp=="q"||tmp=="Q"||tmp=="12") x=12;//exist problem
-			else if(tmp=="k"||tmp=="K"||tmp=="13") x=13;
-			else if(tmp=="a"||tmp=="A") x=1;
-			else if(tmp=="小王"||tmp=="14") x=14;
-			else if(tmp=="大王"||tmp=="15") x=15;
-			if(x!=0)
+		if(count>=n) break;
+		x = 0;
+		if(s[i]<='9'&&s[i]>='2') x = s[i]-'0';
+		else if(s[i]=='1')
+		{
+			if(s[i+1]=='0')
 			{
-				card[x]++;
-				count++;
+				x = 10;
+				i++;
 			}
-			tmp="";
+				
+
+		}
+		else if(s[i]=='j'||s[i]=='J') x=11;
+		else if(s[i]=='q'||s[i]=='Q') x=12;
+		else if(s[i]=='k'||s[i]=='K') x=13;
+		else if(s[i]=='a'||s[i]=='A') x=1;
+		else if(s[i]==s1[0]&&s[i+1]==s[1]&&s[i+2]==s[2]&&s[i+3]==s[3]){
+			x=15;
+			i+=3;
+		}
+		else if(s[i]==s2[0]&&s[i]==s2[1]&&s[i]==s2[2]&&s[i]==s2[3]){
+			x=14;
+			i+=3;
+		}
+		if(x!=0)
+		{
+			card[x]++;
+			count++;
 		}
 	}
 }
@@ -120,7 +102,7 @@ void ShowUnderCard(int *card){
 		for(int i = 0; i< count ; i++)
 	{
 		cout<<"┏━━━━┓";
-	}
+	}	
 	cout<<endl;
 	for (int i=0;i<(num-count)/2;i++)
 	cout<<"       ";
@@ -189,16 +171,12 @@ void ShowOtherCard(int beforenum,int afternum)//BeforeCardNum,AfterCardNum,PreMo
 	else 	cout<<"┃"<<AfterCardNum<<"  ┃";
 	cout<<endl;
 		
-	cout<<player[Pl2];
-	for(i=0;i<7-strlen(player[Pl2]);i++)
-	cout<<" ";
+
+	cout<<"       ";
 	cout<<"┃    ┃";
 	for (i=0;i<num;i++)
 	cout<<"       ";
 	cout<<"┃    ┃";
-		for(i=0;i<7-strlen(player[Pl1]);i++)
-	cout<<" ";
-	cout<<player[Pl1];
 	cout<<endl;
 	
 	cout<<"       ";
@@ -218,7 +196,7 @@ void ShowOtherCard(int beforenum,int afternum)//BeforeCardNum,AfterCardNum,PreMo
 	
 }
 
-void ShowCard(int* card,int flag){
+void ShowCard(int* card){
 		cout<<endl<<endl<<endl;
 		int count = 0;
 		int exist[21];
@@ -275,15 +253,41 @@ void ShowCard(int* card,int flag){
 		for(int i = 0; i<count ; i++)
 		cout<<"┗━━━━┛";
 		cout<<endl;
-	if(flag == 1)
-	{
-
-		cout<<"正在等待"<<"出牌"<<endl;
-
-	}
-	
 }
 
+
+
+int MultiMod(){
+	return 0;
+}
+
+void DEBUG_CardModel(){
+	while (1){
+		int card1[20],card2[20];
+		memset(card1,0,sizeof(card1));
+		memset(card2,0,sizeof(card2));
+		int n;
+		cin>>n;
+		for (int i=1; i<=n; i++){
+			int x;
+			cin>>x;
+			if (x>=1 && x<=15) card1[x]++;
+		}
+		CardModel model1(card1);
+		cout<<model1.ModelName<<'\n';
+		cin>>n;
+		for (int i=1; i<=n; i++){
+			int x;
+			cin>>x;
+			if (x>=1 && x<=15) card2[x]++;
+		}
+		CardModel model2(card2);
+		cout<<model2.ModelName<<'\n';
+		int cmpres=cmp_CardModel(model1,model2);
+		if (cmpres==-1) cout<<"无法比较\n";
+		else cout<<"1"<<(cmpres?"<":">=")<<"2\n";
+	}
+}
 void dealcard(int goalnum,int cardlist[])
 {
 	char str[1024];
@@ -356,10 +360,8 @@ void revmsg(void)
 	char sbuf[1024];
 	memset(msglist,0,sizeof(msglist));
 	memset(sbuf,0,sizeof(sbuf));
-	// cout<<"正在等待出牌";
 	while(1)
 	{
-
 		if ((rev = recv((intptr_t)connfd,sbuf,1024,0))>0)
 		{
 			//snd=send(connfd,buf,strlen(buf),0);//发送消息给服务器
@@ -385,7 +387,7 @@ int main(void)
 	struct hostent *hp;
 	char honame[20],msg2[1024],cln[102],qstr[]={"Quit"}; //qstr的值表示用户在输入"Quit"时和服务器断开链接
 	pthread_t tid;
-	printf("请输入服务器IP地址: ");
+	printf("请输入服务器IP地址\n");
 	scanf("%s*",honame);
 	printf("正在建立套接口...\n");
 	if((connfd= socket(AF_INET, SOCK_STREAM, 0))<0) //建立套接口
@@ -395,17 +397,17 @@ int main(void)
 		printf("获取服务器IP地址失败\n");
 		exit(1);
 	}
-	else printf("套接口建立成功，连接服务器中...\n");
+	else printf("套接口建立成功，链接服务器中...\n");
 	memcpy(&server.sin_addr,hp->h_addr,hp->h_length); //将服务器IP地址放入结构体server中
 	server.sin_family = AF_INET;
 	server.sin_port=htons(PORT);
 	if(connect(connfd,(struct sockaddr*)&server,sizeof(server))<0) //链接套接口 
 	{
-		printf("连接服务器失败\n");
+		printf("链接服务器失败\n");
 		exit(1);
 	}
-	printf("连接服务器成功\n"); //链接成功显示成功的登录信息
-	printf("等待其他玩家加入中...\n");
+	printf("链接服务器成功\n"); //链接成功显示成功的登录信息
+	printf("欢迎来到棋牌室(\"Quit\"断开链接)\n等待游戏开始\n");
 	while(1)
 	{
 		char buf[1024];
@@ -435,10 +437,9 @@ int main(void)
 	}
 	char buf[1024];
 	memset(buf,0,sizeof(buf));
-	Game play;
+	Game player;
 	int undercard[10];
-	Pl1=(selfnum+1)%3;
-	Pl2=(selfnum+2)%3;
+	int Pl1=(selfnum+1)%3,Pl2=(selfnum+2)%3;
 	int beforenum,afternum,restnum;
 	int last_before_num,last_after_num;
 	if(Pl2 == 0) beforenum = 20;
@@ -458,10 +459,10 @@ int main(void)
 			{
 				printf("fapai\n");
 				int card1[20],card2[20],cardex[20];
-				play.ShuffleCard(card1,card2,cardex);
+				player.ShuffleCard(card1,card2,cardex);
 				dealcard(1,card1);
 				dealcard(2,card2);
-				play.AddCard(cardex);
+				player.AddCard(cardex);
 				int count =0;
 						for(int th=1;th<16;th++)
 						{
@@ -492,7 +493,7 @@ int main(void)
 					revmsg();
 					if(goalnum==selfnum&&isfirst==1)
 					{
-						play.SetCard(msglist);
+						player.SetCard(msglist);
 						break;
 					}
 					
@@ -521,9 +522,9 @@ int main(void)
 						}
 						printf("\n");
 						ShowUnderCard(undercard);
-						ShowCard(play.PreModel.Card,0);
+						ShowCard(player.PreModel.Card);
 						ShowOtherCard(beforenum,afternum);
-						ShowCard(play.Card,1);
+						ShowCard(player.Card);
 
 						break;
 					}
@@ -544,26 +545,24 @@ int main(void)
 		{
 		system("clear");
 		ShowUnderCard(undercard);
-		ShowCard(play.PreModel.Card,0);
+		ShowCard(player.PreModel.Card);
 		ShowOtherCard(beforenum,afternum);
-		ShowCard(play.Card,0);
+		ShowCard(player.Card);
 		int card[20];
 		ReadCard(card);
 		
-		int flag=play.PlayCard(card);
+		int flag=player.PlayCard(card);
 
 		if (flag==0){
-			
+			if (player.CheckGameEnd()) return 0; 
 			sendmsg(Pl1,0,card);
 			system("clear");
-			
-			play.SetPreModel(card,selfnum);
+			player.SetPreModel(card,selfnum);
 			ShowUnderCard(undercard);
-			cout<<"出牌的人为:"<<player[play.PrePlayer]<<endl;
-			ShowCard(play.PreModel.Card,0);
+			ShowCard(player.PreModel.Card);
 			ShowOtherCard(beforenum,afternum);
-			ShowCard(play.Card,1);
-			if (play.CheckGameEnd()) return 0; 
+			ShowCard(player.Card);
+			
 			break;
 
 		}
@@ -571,10 +570,9 @@ int main(void)
 			sendmsg(Pl1,0,card);
 			system("clear");
 			ShowUnderCard(undercard);
-			cout<<"出牌的人为:"<<player[play.PrePlayer]<<endl;
-			ShowCard(play.PreModel.Card,0);
+			ShowCard(player.PreModel.Card);
 			ShowOtherCard(beforenum,afternum);
-			ShowCard(play.Card,1);
+			ShowCard(player.Card);
 			break;
 		}
 		else if (flag==1) cout<<"no model!\n";
@@ -597,10 +595,8 @@ int main(void)
 
 	while(1)
 	{
-		
 		revmsg();
-			system("clear");
-			// cout<<"正在等待"<<player[sendnum]<<"出牌";
+
 			int count = 0;
 			for(int i =1;i<16;i++)
 			{
@@ -608,67 +604,53 @@ int main(void)
 			}
 			if(sendnum == Pl2)
 			{
+
 				if(count != 0 ) 
 				{
-					play.SetPreModel(msglist,Pl2);//may exist problem
+					player.SetPreModel(msglist,Pl2);//may exist problem
 					beforenum -= count;
-
 				}
-				if(beforenum == 0){
-					cout<<"Game is over!"<<endl<<player[Pl2]<<"win the game!"<<endl;
-					return 0;
-				} 
 				// cout<<"beforecard:"<<beforenum<<endl;
 				if(last_after_num == afternum&&last_before_num == beforenum)
 				{
-					play.ClearPreModel();
+					player.ClearPreModel();
 
 				}
 				else{
 					last_after_num = afternum;
 					last_before_num = beforenum;
 				}
-				
 				while(1)
 				{
-					// system("clear");
+					system("clear");
 					ShowUnderCard(undercard);
-					cout<<"出牌的人为:"<<player[play.PrePlayer]<<endl;
-					ShowCard(play.PreModel.Card,0);
+					ShowCard(player.PreModel.Card);
 					ShowOtherCard(beforenum,afternum);
-					ShowCard(play.Card,0);
+					ShowCard(player.Card);
 					int card[20];
 					ReadCard(card);
-					int flag=play.PlayCard(card);
+					int flag=player.PlayCard(card);
 
 					if (flag==0){
-						
-						sendmsg(Pl1,0,card);
-						play.SetPreModel(card,selfnum);
-						system("clear");
-						ShowUnderCard(undercard);
-						cout<<"出牌的人为:"<<player[play.PrePlayer]<<endl;
-						ShowCard(play.PreModel.Card,0);
-						ShowOtherCard(beforenum,afternum);
-						ShowCard(play.Card,1);
-						if (play.CheckGameEnd()) 
-						{
-							cout<<"Game is over!"<<endl<<"You win the game!"<<endl;
-							return 0; 
-						}
-						break;
-
+					if (player.CheckGameEnd()) return 0; 
+					sendmsg(Pl1,0,card);
+					player.SetPreModel(card,selfnum);
+					system("clear");
+					ShowUnderCard(undercard);
+					ShowCard(player.PreModel.Card);
+					ShowOtherCard(beforenum,afternum);
+					ShowCard(player.Card);
+					break;
 					}
 					else if (flag==5) {
-						sendmsg(Pl1,0,card);
-						system("clear");
-						// play.SetPreModel(card);
-						ShowUnderCard(undercard);
-						cout<<"出牌的人为:"<<player[play.PrePlayer]<<endl;
-						ShowCard(play.PreModel.Card,0);
-						ShowOtherCard(beforenum,afternum);
-						ShowCard(play.Card,1);
-						break;
+					sendmsg(Pl1,0,card);
+					system("clear");
+					// player.SetPreModel(card);
+					ShowUnderCard(undercard);
+					ShowCard(player.PreModel.Card);
+					ShowOtherCard(beforenum,afternum);
+					ShowCard(player.Card);
+					break;
 					}
 					else if (flag==1) cout<<"no model!\n";
 					else if (flag==2) cout<<"no engouh card!\n";
@@ -678,25 +660,19 @@ int main(void)
 
 
 				}				
-				// cout<<"正在等待"<<player[sendnum]<<"出牌";
+
 
 
 				
 			}
 			if(sendnum == Pl1)
 			{
-				// system("clear");
+				system("clear");
 				afternum -=count;
-				if(afternum == 0){
-					cout<<"Game is over!"<<endl<<player[Pl1]<<"win the game!"<<endl;
-					return 0;
-				} 
 				ShowUnderCard(undercard);
-				cout<<"出牌的人为:"<<player[play.PrePlayer]<<endl;
-				ShowCard(play.PreModel.Card,0);
+				ShowCard(player.PreModel.Card);
 				ShowOtherCard(beforenum,afternum);
-				ShowCard(play.Card,1);
-				// cout<<"正在等待"<<player[Pl1]<<"出牌";
+				ShowCard(player.Card);
 			}
 		
 	}
