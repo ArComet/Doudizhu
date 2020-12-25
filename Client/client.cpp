@@ -44,37 +44,57 @@ void ReadCard(int* card){
 		cin.getline(s,sizeof(s));
 
 	}
+	string tmp="";
 	for (int i=0;i<strlen(s);i++)
 	{
-		if(count>=n) break;
-		x = 0;
-		if(s[i]<='9'&&s[i]>='2') x = s[i]-'0';
-		else if(s[i]=='1')
-		{
-			if(s[i+1]=='0')
-			{
-				x = 10;
-				i++;
+		// if(count>=n) break;
+		// x = 0;
+		// if(s[i]<='9'&&s[i]>='2') x = s[i]-'0';
+		// else if(s[i]=='1')
+		// {
+		// 	if(s[i+1]=='0')
+		// 	{
+		// 		x = 10;
+		// 		i++;
+		// 	}
+		// }
+		// else if(s[i]=='j'||s[i]=='J') x=11;
+		// else if(s[i]=='q'||s[i]=='Q') x=12;
+		// else if(s[i]=='k'||s[i]=='K') x=13;
+		// else if(s[i]=='a'||s[i]=='A') x=1;
+		// else if(s[i]==s1[0]&&s[i+1]==s[1]&&s[i+2]==s[2]&&s[i+3]==s[3]){
+		// 	x=15;
+		// 	i+=3;
+		// }
+		// else if(s[i]==s2[0]&&s[i]==s2[1]&&s[i]==s2[2]&&s[i]==s2[3]){
+		// 	x=14;
+		// 	i+=3;
+		// }
+		// if(x!=0)
+		// {
+		// 	card[x]++;
+		// 	count++;
+		// }
+		if (s[i]==" "){
+			if (tmp.size()==1 && (tmp>="1" || tmp<="9") ){
+				x=tmp[0]-'0';
 			}
-				
-
+			else if (tmp=="10") x=10;
+			else if(tmp=="j"||tmp=="J"||tmp=="11") x=11;
+			else if(tmp=="q"||tmp=="Q"||tmp=="12") x=12;
+			else if(tmp=="k"||tmp=="K"||tmp=="13") x=13;
+			else if(tmp=="a"||tmp=="A") x=1;
+			else if(tmp=="小王"||tmp=="14") x=14;
+			else if(tmp=="大王"||tmp=="15") x=15;
+			if(x!=0)
+			{
+				card[x]++;
+				count++;
+			}
+			tmp="";
 		}
-		else if(s[i]=='j'||s[i]=='J') x=11;
-		else if(s[i]=='q'||s[i]=='Q') x=12;
-		else if(s[i]=='k'||s[i]=='K') x=13;
-		else if(s[i]=='a'||s[i]=='A') x=1;
-		else if(s[i]==s1[0]&&s[i+1]==s[1]&&s[i+2]==s[2]&&s[i+3]==s[3]){
-			x=15;
-			i+=3;
-		}
-		else if(s[i]==s2[0]&&s[i]==s2[1]&&s[i]==s2[2]&&s[i]==s2[3]){
-			x=14;
-			i+=3;
-		}
-		if(x!=0)
-		{
-			card[x]++;
-			count++;
+		else{
+			tmp+=s[i];
 		}
 	}
 }
