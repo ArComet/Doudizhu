@@ -158,12 +158,14 @@ void ShowUnderCard(int *card){
 		for(int i = 0; i<count ; i++)
 		cout<<"┗━━━━┛";
 		cout<<endl;
+		cout<<endl;
+		cout<<endl;
 }
 void ShowOtherCard(int beforenum,int afternum)//BeforeCardNum,AfterCardNum,PreModel.Card
 {
-	cout<<endl;
-	cout<<endl;
-	cout<<endl;
+	// cout<<endl;
+	// cout<<endl;
+	// cout<<endl;
 	int count =2;
 	int num = 23;
 	int BeforeCardNum = beforenum;
@@ -216,11 +218,14 @@ void ShowOtherCard(int beforenum,int afternum)//BeforeCardNum,AfterCardNum,PreMo
 	cout<<"┗━━━━┛";
 	cout<<endl;
 	}
-	
+	cout<<endl;
+	cout<<endl;
+	cout<<endl;
+	cout<<endl<<endl<<endl;
 }
 
 void ShowCard(int* card,int flag){
-		cout<<endl<<endl<<endl;
+		
 		int count = 0;
 		int exist[21];
 		for (int i=3; i<14; i++)
@@ -232,7 +237,7 @@ void ShowCard(int* card,int flag){
 		for(int i=14;i<16;i++)
 			for(int j=1;j<=card[i];j++)
 				exist[count++] =i;
-	cout<<endl<<endl<<endl;
+	
 	const int num = 29;
 	for (int i=0;i<(num-count)/2;i++)
 		cout<<"       ";
@@ -276,12 +281,14 @@ void ShowCard(int* card,int flag){
 		for(int i = 0; i<count ; i++)
 		cout<<"┗━━━━┛";
 		cout<<endl;
-	if(flag == 1)
-	{
+		
+		if(flag == 1)
+		{
 
-		cout<<"正在等待"<<player[now]<<"出牌"<<endl;
+			cout<<"正在等待"<<player[now%3]<<"出牌"<<endl;
 
-	}
+		}
+		cout<<endl<<endl<<endl;
 	
 }
 
@@ -561,7 +568,7 @@ int main(void)
 		int flag=play.PlayCard(card);
 
 		if (flag==0){
-			
+			now++;
 			sendmsg(Pl1,0,card);
 			system("clear");
 			
@@ -569,7 +576,7 @@ int main(void)
 			ShowUnderCard(undercard);
 			if(play.PrePlayer>=0)
 			{
-				for (int i=0;i<(29-1)/2;i++)
+				for (int i=0;i<(29-2)/2;i++)
 				cout<<"       ";
 				cout<<"出牌的人为:"<<player[play.PrePlayer]<<endl;
 				
@@ -582,12 +589,13 @@ int main(void)
 
 		}
 		else if (flag==5) {
+			now++;
 			sendmsg(Pl1,0,card);
 			system("clear");
 			ShowUnderCard(undercard);
 			if(play.PrePlayer>=0)
 			{
-				for (int i=0;i<(29-1)/2;i++)
+				for (int i=0;i<(29-2)/2;i++)
 				cout<<"       ";
 				cout<<"出牌的人为:"<<player[play.PrePlayer]<<endl;
 				
@@ -629,7 +637,7 @@ int main(void)
 			now++;
 			if(sendnum == Pl2)
 			{
-				now++;
+
 				if(count != 0 ) 
 				{
 					play.SetPreModel(msglist,Pl2);//may exist problem
@@ -657,7 +665,7 @@ int main(void)
 					ShowUnderCard(undercard);
 					if(play.PrePlayer>=0)
 					{
-						for (int i=0;i<(29-1)/2;i++)
+						for (int i=0;i<(29-2)/2;i++)
 						cout<<"       ";
 						cout<<"出牌的人为:"<<player[play.PrePlayer]<<endl;
 						
@@ -668,17 +676,17 @@ int main(void)
 					int card[20];
 					ReadCard(card);
 					int flag=play.PlayCard(card);
-					now++;
+					
 
 					if (flag==0){
-						
+						now++;
 						sendmsg(Pl1,0,card);
 						play.SetPreModel(card,selfnum);
 						system("clear");
 						ShowUnderCard(undercard);
 						if(play.PrePlayer>=0)
 						{
-							for (int i=0;i<(29-1)/2;i++)
+							for (int i=0;i<(29-2)/2;i++)
 							cout<<"       ";
 							cout<<"出牌的人为:"<<player[play.PrePlayer]<<endl;
 							
@@ -695,13 +703,14 @@ int main(void)
 
 					}
 					else if (flag==5) {
+						now++;
 						sendmsg(Pl1,0,card);
 						system("clear");
 						// play.SetPreModel(card);
 						ShowUnderCard(undercard);
 						if(play.PrePlayer>=0)
 						{
-							for (int i=0;i<(29-1)/2;i++)
+							for (int i=0;i<(29-2)/2;i++)
 							cout<<"       ";
 							cout<<"出牌的人为:"<<player[play.PrePlayer]<<endl;
 						}
@@ -739,7 +748,7 @@ int main(void)
 				ShowUnderCard(undercard);
 				if(play.PrePlayer>=0)
 				{
-						for (int i=0;i<(29-1)/2;i++)
+						for (int i=0;i<(29-2)/2;i++)
 						cout<<"       ";
 					cout<<"出牌的人为:"<<player[play.PrePlayer]<<endl;
 				}
