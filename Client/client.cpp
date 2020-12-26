@@ -279,7 +279,7 @@ void ShowCard(int* card,int flag){
 	if(flag == 1)
 	{
 
-		cout<<"正在等待"<<"出牌"<<endl;
+		cout<<"正在等待"<<player[now]<<"出牌"<<endl;
 
 	}
 	
@@ -626,6 +626,7 @@ int main(void)
 			{
 				if(msglist[i]!=0)  count+=msglist[i];
 			}
+			now++;
 			if(sendnum == Pl2)
 			{
 				now++;
@@ -667,6 +668,7 @@ int main(void)
 					int card[20];
 					ReadCard(card);
 					int flag=play.PlayCard(card);
+					now++;
 
 					if (flag==0){
 						
@@ -723,7 +725,7 @@ int main(void)
 			}
 			if(sendnum == Pl1)
 			{
-				now++;
+				
 				// system("clear");
 				if(count != 0 ) 
 				{
