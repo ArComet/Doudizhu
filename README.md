@@ -2,13 +2,20 @@
 
 一款经典的棋牌类游戏
 
-平台：Linux/Windows
+平台：Linux
 
 语言：C/C++
 
 实验环境：UbuntuKylin20.4虚拟机 ， Ubuntu18.04.4
 
-## 系统开发情况介绍：
+## 安装步骤
+
+```sh
+sudo apt install g++
+sudo apt install mplayer
+```
+
+## 系统开发情况介绍
 
 我们设计的系统是一个在同一网络下能够实现三人联机斗地主的系统，玩家可以通过连接服务器来与其他人打牌。
 ### 系统设计背景
