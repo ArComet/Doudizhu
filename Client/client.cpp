@@ -377,9 +377,8 @@ void revmsg(void)
 	}
 }
 
-void* play_bgmusic(void* args){
-	system("mplayer ../Music/bg_music.mp3 >music_log.txt &");
-	return 0;
+void play_bgmusic(){
+	system("mplayer -quiet ../Music/bg_music.mp3 > /dev/null 2>&1 &");
 }
 
 int sendnums,isfirsts;
@@ -439,8 +438,9 @@ int main(void)
 		}
 
 	}
-	pthread_t tid_bg;
-	pthread_create(&tid_bg,NULL,play_bgmusic,NULL);//bg_music
+	//pthread_t tid_bg;
+	//pthread_create(&tid_bg,NULL,play_bgmusic,NULL);//bg_music
+	play_bgmusic();//bg_music
 	char buf[1024];
 	memset(buf,0,sizeof(buf));
 	Game play;

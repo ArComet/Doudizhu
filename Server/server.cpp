@@ -90,7 +90,7 @@ int main(void)
 					{
 						memset(playname[i],0,sizeof(playname[i]));
 						strcpy(playname[i],pname);
-						printf("%s\n",pname); 
+						printf("[%s]加入了房间\n",pname); 
 						break;
 					}
 			}
